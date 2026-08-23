@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Puzzleboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --neon-green: #39ff14;
+            --vibrant-pink: #ff00cc;
+            --deep-bg: #001a00;
+            --border-color: rgb(128, 0, 128);
+        }
+
+        /* Font-weight bold cho toàn bộ văn bản trên bảng */
+        * {
+            font-weight: bold !important;
+        }
+
+        body {
+            background-color: #2f4f4f;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            color: white;
+            overflow: hidden;
+        }
+
+        #score-container {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 20px;
+        }
+
+        .score-box {
+            width: 220px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            border: 3px solid #fff;
+        }
+
+        .score-box.red {
+            background: #ff0000;
+            color: #fff;
+        }
+
+        .score-box.yellow {
+            background: #ffff00;
+            color: #000;
+        }
+
+        .score-box.blue {
+            background: #0000ff;
+            color: #fff;
+        }
+
+        /* Style cho ô đồng hồ bên cạnh ô màu xanh */
+        .score-box.timer-box {
+            background: #ff00ff;
+            color: #ffffff;
+            transition: background 0.3s ease, color 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        #category-display {
+            color: yellow;
+            font-size: 3rem;
+            margin-bottom: 25px;
+            text-shadow: 0 0 15px rgba(255, 255, 0, 0.8);
+            text-transform: uppercase;
+            user-select: none;
+        }
+
+        #board {
+            display: grid;
+            grid-template-rows: repeat(4, 1fr);
+            gap: 6px;
+            background: var(--deep-bg);
+            padding: 30px;
+            box-shadow: 0 0 60px rgb(128, 0, 128);
+            transition: all 0.5s ease;
+            border-radius: 20px;
+            position: relative;
+        }
+
+        #board::after {
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: -6px;
+            right: -6px;
+            bottom: -6px;
+            border: 3px solid var(--border-color);
+            border-radius: 24px;
+            pointer-events: none;
+        }
+
+        .row {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            width: fit-content;
+            margin: 0 auto;
+            user-select: none;
+        }
+
+        @font-face {
+            font-family: 'UTM HELVETINS_3';
+            src: url('UTM HELVETINS_3.TTF') format('truetype');
+            font-weight: bold;
+            font-style: normal;
+        }
+
+        .cell {
+            width: 72px;
+            height: 100px;
+            font-size: 64px;
+            box-sizing: border-box;
+            border: none;
+            border-radius: 0px;
+
+            background-color: #61a252;
+            background-image: url("Ô chữ.png");
+            background-size: 110% 110%;
+            background-position: center;
+            background-repeat: no-repeat;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
+            color: transparent;
+            user-select: none;
+        }
+
+        .cell.active {
+            background-image: none;
+            background-color: white;
+            /* Viền đen 3px inset và viền đỏ 1px inset xếp chồng lên nhau */
+            box-shadow: inset 0 0 0 2px #000, inset 0 0 0 3px #2a032a;
+            border-radius: 0px;
+        }
+
+        .cell.revealed {
+            background-image: none;
+            background-color: white;
+            box-shadow: inset 0 0 0 3px #000;
+            border-radius: 0px;
+            color: #000;
+            font-weight: bold;
+            font-family: 'UTM HELVETINS_3', sans-serif;
+        }
+
+        .cell.marked {
+            background-image: none;
+            background-color: blue;
+            box-shadow: inset 0 0 0 3px #000;
+            border-radius: 0px;
+            color: transparent;
+        }
+
+        .cell.decoding {
+            background-image: url("Giải mã.png");
+            background-size: 110% 110%;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: #ffcc00;
+            box-shadow: inset 0 0 0 2px #000;
+            color: transparent;
+        }
+
+        .banner-row {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            width: fit-content;
+            margin: 0 auto 6px auto;
+            user-select: none;
+        }
+
+        .banner-cell {
+            width: 72px;
+            height: 100px;
+            font-size: 64px;
+            font-family: 'UTM HELVETINS_3', sans-serif, Arial;
+            font-weight: bold;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            user-select: none;
+            border-radius: 0px;
+            border: none;
+        }
+
+        .banner-cell.empty {
+            background-color: #94dceb !important;
+            background-image: none !important;
+            color: transparent;
+        }
+
+        .banner-cell.filled {
+            background-color: #ffffff !important;
+            background-image: none !important;
+            color: #000000 !important;
+        }
+
+        #puzzle-main-container {
+            border: 12px solid rgb(128, 0, 128);
+            border-radius: 25px;
+            transition: all 0.5s ease;
+            box-shadow: 0 0 20px rgba(128, 0, 128, 0.5);
+            padding: 5px;
+        }
+
+        audio {
+            display: none;
+        }
+
+        #no-roomid-msg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #000000;
+            color: #ff0000;
+            font-size: 2rem;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999999;
+            text-align: center;
+            padding: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="score-box timer-box" id="board-countdown">45</div>
+    <div id="score-container">
+        <div class="score-box red" id="score-red">0</div>
+        <div class="score-box yellow" id="score-yellow">0</div>
+        <div class="score-box blue" id="score-blue">0</div>
+    </div>
+    <div id="category-display">- CHƯA CÓ CHỦ ĐỀ -</div>
+    <div id="puzzle-main-container">
+        <div id="round-banner" class="banner-row" style="display:none;"></div>
+        <div id="board"></div>
+    </div>
+
+    <audio id="globalSound" preload="auto"></audio>
+    <audio id="buzzerSound" src="buzzer.mp3" preload="auto"></audio>
+
+    <script>
+        var SUPABASE_URL = 'https://tfdgtdderkaergijhucb.supabase.co';
+        var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmZGd0ZGRlcmthZXJnaWpodWNiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg0NjM5MzksImV4cCI6MjA5NDAzOTkzOX0._BOLe4xH5ZuhfXfsdS63eY9N12wyomq58GG0toi1aIE';
+        var db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const roomId = urlParams.get('roomid');
+        const activeAudios = [];
+
+        if (!roomId) {
+            document.body.innerHTML = '<div id="no-roomid-msg">Vui lòng nhập tham số ?roomid trên URL.</div>';
+            window.onload = null; // Chặn khởi chạy sự kiện onload
+            throw new Error("Thiếu tham số roomid trên URL");
+        }
+
+        function getRoomFilterValue(value = roomId) {
+            const normalized = value == null ? "" : String(value).trim();
+            return /^\d+$/.test(normalized) ? Number(normalized) : normalized;
+        }
+        
+        let currentLayout = [];
+        let boardStateCache = {
+            puzzle_text: '',
+            category: '',
+            boardLayout: [],
+            revealedList: [],
+            markedPositions: [],
+            revealedPositions: []
+        };
+
+        // Các biến phục vụ đồng hồ đếm ngược
+        let localCountdownInterval = null;
+        let currentSeconds = 45;
+        let isTimerRunning = false;
+
+        // Quản lý âm thanh toàn cục
+        let audioContextUnlocked = false;
+        const globalAudio = document.getElementById('globalSound');
+        const buzzerAudio = document.getElementById('buzzerSound');
+
+        // Biến lưu vết tín hiệu âm thanh cũ để tránh chạy lặp lại lệnh cũ khi khởi tạo trang
+        let lastPlayedSignal = null;
+
+        // Hàm tương tác bất kỳ để kích hoạt quyền nghe toàn bộ âm thanh (Cách tiếp cận cô lập an toàn)
+        function unlockAudio() {
+            if (audioContextUnlocked) return;
+
+            // Sử dụng các đối tượng Audio phụ để xin quyền, không đụng vào thuộc tính .src của thẻ thật trên HTML
+            const unlock1 = new Audio("data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA==");
+            const unlock2 = new Audio("data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA==");
+
+            Promise.all([unlock1.play(), unlock2.play()])
+                .then(() => {
+                    audioContextUnlocked = true;
+                    console.log("Quyền phát âm thanh (Global & Buzzer) đã được mở khóa thành công!");
+                    // Gỡ bỏ sự kiện click này để không chạy lại vô ích
+                    document.removeEventListener('click', unlockAudio);
+                })
+                .catch(e => {
+                    console.log("Chờ tương tác hợp lệ từ người dùng để mở âm thanh...", e);
+                });
+        }
+        // Lắng nghe sự kiện click trên toàn bộ văn bản trang web
+        document.addEventListener('click', unlockAudio);
+
+        // Hàm thực hiện xử lý tín hiệu âm thanh đồng bộ từ Soundboard
+        function handleSoundSync(soundSignal) {
+            if (!soundSignal) return;
+
+            if (soundSignal === lastPlayedSignal) return;
+            lastPlayedSignal = soundSignal;
+
+            const soundFile = soundSignal.split('?')[0];
+
+            if (soundFile === 'STOP') {
+                // Dừng tất cả âm thanh đang phát cùng lúc
+                activeAudios.forEach(audio => {
+                    audio.pause();
+                    audio.currentTime = 0;
+                });
+                activeAudios.length = 0;
+
+                if (typeof globalAudio !== 'undefined' && globalAudio) {
+                    globalAudio.pause();
+                    globalAudio.currentTime = 0;
+                }
+            }
+            else if (soundFile === 'buzzer.mp3') {
+                buzzerAudio.currentTime = 0;
+                buzzerAudio.play().catch(err => console.warn(err));
+            }
+            else {
+                // Tạo đối tượng Audio mới cho mỗi âm thanh để phát đè/phát song song nhiều âm thanh cùng lúc
+                const audio = new Audio(soundFile);
+                activeAudios.push(audio);
+
+                // Tự động xóa khỏi danh sách sau khi âm thanh kết thúc
+                audio.onended = () => {
+                    const index = activeAudios.indexOf(audio);
+                    if (index > -1) activeAudios.splice(index, 1);
+                };
+
+                audio.play().catch(err => console.warn("Trình duyệt chặn phát âm thanh tự động:", err));
+            }
+        }
+
+        function startLocalCountdown() {
+            clearInterval(localCountdownInterval);
+            localCountdownInterval = setInterval(() => {
+                if (currentSeconds > 0) {
+                    currentSeconds--;
+                    updateTimerUI(currentSeconds);
+                } else {
+                    clearInterval(localCountdownInterval);
+                    isTimerRunning = false;
+                }
+            }, 1000);
+        }
+
+        function updateTimerUI(seconds) {
+            const timerBox = document.getElementById('board-countdown');
+            if (!timerBox) return;
+
+            timerBox.innerText = seconds;
+            timerBox.style.setProperty('background', '#ff00ff', 'important');
+            timerBox.style.setProperty('color', '#ffffff', 'important');
+        }
+
+        function handleTimerSync(dbTimer, dbTimerRunning) {
+            if (dbTimer === undefined || dbTimer === null) return;
+            const targetSec = parseInt(dbTimer, 10);
+            if (isNaN(targetSec)) return;
+
+            const targetRunning = (dbTimerRunning === true || dbTimerRunning === 'true' || dbTimerRunning === 1);
+
+            if (!targetRunning) {
+                clearInterval(localCountdownInterval);
+                localCountdownInterval = null;
+                isTimerRunning = false;
+                currentSeconds = targetSec;
+                updateTimerUI(currentSeconds);
+                return;
+            }
+
+            if (targetRunning) {
+                const isTimeMismatched = Math.abs(currentSeconds - targetSec) > 1;
+                const isNewRoundReset = (targetSec === 45 || targetSec === 30 || targetSec === 15 || targetSec === 10);
+
+                if (!isTimerRunning || isTimeMismatched || isNewRoundReset) {
+                    currentSeconds = targetSec;
+                    updateTimerUI(currentSeconds);
+                    isTimerRunning = true;
+                    if (currentSeconds > 0) {
+                        startLocalCountdown();
+                    }
+                }
+            }
+        }
+
+        function parseBoardLayout(val) {
+            if (val == null || val === '') return [];
+            if (Array.isArray(val)) return val;
+            if (typeof val === 'string') {
+                try {
+                    return JSON.parse(val);
+                } catch {
+                    return [];
+                }
+            }
+            return [];
+        }
+
+        function parsePosList(str) {
+            if (!str || typeof str !== 'string') return [];
+            return str.split(',').map(x => parseInt(x.trim(), 10)).filter(n => !isNaN(n) && n >= 1 && n <= 64);
+        }
+
+        function rcToPosition(r, c) {
+            if (r >= 0 && r <= 3 && c >= 0 && c <= 15) {
+                return (r * 16) + c + 1;
+            }
+            return null;
+        }
+
+        function createBoard() {
+            const board = document.getElementById('board');
+            board.innerHTML = '';
+            const config = [16, 16, 16, 16];
+
+            config.forEach((count, rIdx) => {
+                const row = document.createElement('div');
+                row.className = 'row';
+                for (let cIdx = 0; cIdx < count; cIdx++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.id = `cell-${rIdx}-${cIdx}`;
+                    row.appendChild(cell);
+                }
+                board.appendChild(row);
+            });
+        }
+
+        function removeToneMarks(str) {
+            if (!str) return "";
+            return str.normalize("NFD").replace(/[\u0301\u0300\u0309\u0303\u0323]/g, "").normalize("NFC");
+        }
+
+        function updateBoard(puzzle, revealed, category, boardLayout = [], markedPositions = [], revealedPositions = [], isFullReveal = false, decodingPositions = []) {
+            document.getElementById('category-display').innerText = category || "";
+            boardStateCache = {
+                puzzle_text: puzzle || '',
+                category: category || '',
+                boardLayout: Array.isArray(boardLayout) ? boardLayout : [],
+                revealedList: Array.isArray(revealed) ? revealed : [],
+                markedPositions: Array.isArray(markedPositions) ? markedPositions : [],
+                revealedPositions: Array.isArray(revealedPositions) ? revealedPositions : [],
+                decodingPositions: Array.isArray(decodingPositions) ? decodingPositions : [],
+                isFullReveal: isFullReveal
+            };
+
+            const markedSet = new Set(boardStateCache.markedPositions);
+            const revealedPosSet = new Set(boardStateCache.revealedPositions);
+            const decodingSet = new Set(boardStateCache.decodingPositions);
+
+            const showDecodingCell = (target) => {
+                target.classList.remove('active', 'revealed', 'marked');
+                target.classList.add('decoding');
+                target.innerText = '';
+                target.style.backgroundImage = 'url("Giải mã.png")';
+                target.style.backgroundSize = '110% 110%';
+                target.style.backgroundPosition = 'center';
+                target.style.backgroundRepeat = 'no-repeat';
+                target.style.backgroundColor = '#ffcc00';
+            };
+
+            // Reset lại toàn bộ ô chữ về trạng thái ẩn ban đầu
+            document.querySelectorAll('.cell').forEach(c => {
+                c.className = 'cell';
+                c.innerText = '';
+                c.style.backgroundImage = '';
+                c.style.backgroundColor = '';
+                delete c.dataset.char;
+            });
+
+            const layout = boardStateCache.boardLayout;
+            if (!Array.isArray(layout)) return;
+
+            layout.forEach((rowChars, rIdx) => {
+                if (!Array.isArray(rowChars)) return;
+                rowChars.forEach((cellData, cIdx) => {
+                    const target = document.getElementById(`cell-${rIdx}-${cIdx}`);
+                    if (!target) return;
+
+                    // Tách dữ liệu từ Object hoặc Chuỗi thuần túy
+                    let char = "";
+                    let isDecoding = false;
+
+                    if (cellData && typeof cellData === 'object') {
+                        char = cellData.char;
+                        isDecoding = !!cellData.isDecoding;
+                    } else {
+                        char = cellData;
+                    }
+
+                    if (!char || String(char).trim() === '') return;
+
+                    const pos = rcToPosition(rIdx, cIdx);
+                    const isDecodingCell = isDecoding || (pos !== null && decodingSet.has(pos));
+
+                    target.classList.add('active');
+                    target.dataset.char = char;
+
+                    // --- ĐOẠN ĐÃ SỬA: XỬ LÝ PHÂN LOẠI ĐIỀU KIỆN THEO CƠ CHẾ CHUẨN ---
+
+                    // 1. Nếu là Ô GIẢI MÃ và đã được bấm nút kích hoạt mở công khai
+                    if (isDecodingCell && pos !== null && revealedPosSet.has(pos)) {
+                        target.classList.add('revealed');
+                        target.innerText = removeToneMarks(char);
+                        target.style.backgroundImage = 'none';
+                        target.style.backgroundColor = 'white';
+                    }
+                    // 2. Nếu là Ô GIẢI MÃ nhưng chưa được lật (Giữ ẩn tuyệt đối kể cả khi bật Hiện toàn bộ)
+                    else if (isDecodingCell) {
+                        showDecodingCell(target);
+                    }
+                    // 3. ƯU TIÊN LÊN TRÊN: Nếu đang bật nút HIỆN TOÀN BỘ Ô CHỮ (Hiện chữ nguyên bản gốc, giữ nguyên các dấu hỏi, ngã, nặng...)
+                    else if (isFullReveal) {
+                        target.classList.add('revealed');
+                        target.innerText = char; // Đảm bảo hiện chữ gốc có dấu chuẩn xác ở ngay lần bấm đầu tiên
+                        target.style.backgroundImage = 'none';
+                        target.style.backgroundColor = 'white';
+                    }
+                    // 4. Nếu là ô thường và đã được lật mở theo tọa độ vị trí cụ thể từ Controller
+                    else if (pos !== null && revealedPosSet.has(pos)) {
+                        target.classList.add('revealed');
+                        target.innerText = removeToneMarks(char);
+                        target.style.backgroundImage = 'none';
+                        target.style.backgroundColor = 'white';
+                    }
+                    // 5. Nếu ô chữ đang được bôi màu đánh dấu (marked) để chú ý
+                    else if (pos !== null && markedSet.has(pos)) {
+                        target.classList.add('marked');
+                    }
+                    // 6. Nếu chữ cái thường này nằm trong danh sách đoán từ bàn phím chữ cái
+                    else {
+                        const cleanChar = removeToneMarks(char).toUpperCase();
+                        if (Array.isArray(revealed) && revealed.includes(cleanChar) && pos !== null && revealedPosSet.has(pos)) {
+                            target.classList.add('revealed');
+                            target.innerText = removeToneMarks(char);
+                            target.style.backgroundImage = 'none';
+                            target.style.backgroundColor = 'white';
+                        }
+                    }
+                });
+            });
+        }
+
+        function renderRoundBanner(text) {
+            let bannerEl = document.getElementById('round-banner');
+            if (!bannerEl) {
+                const container = document.getElementById('puzzle-main-container');
+                const board = document.getElementById('board');
+                if (container && board) {
+                    bannerEl = document.createElement('div');
+                    bannerEl.id = 'round-banner';
+                    container.insertBefore(bannerEl, board);
+                } else {
+                    return;
+                }
+            }
+
+            const bannerText = String(text || '').trim().toUpperCase();
+            if (!bannerText) {
+                bannerEl.style.display = 'none';
+                bannerEl.innerHTML = '';
+                return;
+            }
+
+            bannerEl.style.display = 'flex';
+            bannerEl.className = 'banner-row';
+
+            const chars = Array.from(bannerText);
+            const L = chars.length;
+            const totalCols = 16;
+            const startIndex = Math.floor((totalCols - L) / 2);
+
+            let html = '';
+            for (let i = 0; i < totalCols; i++) {
+                let ch = '';
+                if (i >= startIndex && i < startIndex + L) {
+                    ch = chars[i - startIndex];
+                }
+                if (ch && ch !== ' ') {
+                    html += `<div class="banner-cell filled">${ch}</div>`;
+                } else {
+                    html += `<div class="banner-cell empty"></div>`;
+                }
+            }
+            bannerEl.innerHTML = html;
+        }
+
+        function applyBorderColorAndBanner(borderColorStr) {
+            if (!borderColorStr) return;
+            let color = borderColorStr;
+            let bannerText = '';
+            if (color.includes('|BANNER:')) {
+                const parts = color.split('|BANNER:');
+                color = parts[0];
+                bannerText = parts[1] || '';
+            }
+            if (color) {
+                document.documentElement.style.setProperty('--border-color', color);
+                const board = document.getElementById('board');
+                if (board) board.style.boxShadow = `0 0 60px ${color}`;
+                const container = document.getElementById('puzzle-main-container');
+                if (container) {
+                    container.style.borderColor = color;
+                    container.style.boxShadow = `0 0 20px ${color}`;
+                }
+            }
+            renderRoundBanner(bannerText);
+        }
+
+        async function fetchState() {
+            const { data, error } = await db.from('wheel_game').select('*').eq('room_id', getRoomFilterValue()).single();
+            if (error) {
+                console.error("Lỗi fetch:", error);
+                return;
+            }
+            if (data) {
+                handleTimerSync(data.timer, data.timer_running);
+
+                // Đồng bộ trạng thái tín hiệu âm thanh ban đầu từ database khi vừa mở trang lên
+                if (data.current_sound) {
+                    lastPlayedSignal = data.current_sound;
+                }
+
+                const modeScore = data.score_display_mode || 'round';
+                if (modeScore === 'total') {
+                    document.getElementById('score-red').innerText = (data.score_red_total || 0).toLocaleString('vi-VN');
+                    document.getElementById('score-yellow').innerText = (data.score_yellow_total || 0).toLocaleString('vi-VN');
+                    document.getElementById('score-blue').innerText = (data.score_blue_total || 0).toLocaleString('vi-VN');
+                } else {
+                    document.getElementById('score-red').innerText = (data.score_red_round || 0).toLocaleString('vi-VN');
+                    document.getElementById('score-yellow').innerText = (data.score_yellow_round || 0).toLocaleString('vi-VN');
+                    document.getElementById('score-blue').innerText = (data.score_blue_round || 0).toLocaleString('vi-VN');
+                }
+
+                if (data.border_color) {
+                    applyBorderColorAndBanner(data.border_color);
+                }
+
+                const puz = data.puzzle_text || "";
+                const cat = data.category || "";
+                const rev = data.revealed_chars ? data.revealed_chars.split(',').map(s => s.trim()).filter(Boolean) : [];
+                const lay = parseBoardLayout(data.board_layout);
+                const markedPos = parsePosList(data.marked_positions);
+                const revPos = parsePosList(data.revealed_positions);
+                const decodingPos = parsePosList(data.decoding_positions);
+                const isFull = !!data.is_full_reveal;
+
+                updateBoard(puz, rev, cat, lay, markedPos, revPos, isFull, decodingPos);
+                applyLights(data);
+            }
+        }
+
+        window.onload = async () => {
+            createBoard();
+            await fetchState();
+
+            db.channel('puzzle_realtime')
+                .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'wheel_game', filter: `room_id=eq.${encodeURIComponent(String(roomId))}` }, payload => {
+                    const data = payload.new;
+
+                    // Theo dõi Realtime tín hiệu âm thanh mới từ Soundboard đổ về
+                    if ('current_sound' in data) {
+                        handleSoundSync(data.current_sound);
+                    }
+
+                    if ('timer' in data || 'timer_running' in data) {
+                        const nextTimer = 'timer' in data ? data.timer : currentSeconds;
+                        const nextRunning = 'timer_running' in data ? data.timer_running : isTimerRunning;
+                        handleTimerSync(nextTimer, nextRunning);
+                    }
+
+                    const modeScore = data.score_display_mode || 'round';
+                    if (modeScore === 'total') {
+                        document.getElementById('score-red').innerText = (data.score_red_total || 0).toLocaleString('vi-VN');
+                        document.getElementById('score-yellow').innerText = (data.score_yellow_total || 0).toLocaleString('vi-VN');
+                        document.getElementById('score-blue').innerText = (data.score_blue_total || 0).toLocaleString('vi-VN');
+                    } else {
+                        document.getElementById('score-red').innerText = (data.score_red_round || 0).toLocaleString('vi-VN');
+                        document.getElementById('score-yellow').innerText = (data.score_yellow_round || 0).toLocaleString('vi-VN');
+                        document.getElementById('score-blue').innerText = (data.score_blue_round || 0).toLocaleString('vi-VN');
+                    }
+
+                    if (data.border_color) {
+                        applyBorderColorAndBanner(data.border_color);
+                    }
+
+                    const rev = data.revealed_chars !== undefined
+                        ? (data.revealed_chars ? data.revealed_chars.split(',').map(s => s.trim()).filter(Boolean) : [])
+                        : boardStateCache.revealedList;
+                    const lay = data.board_layout !== undefined
+                        ? parseBoardLayout(data.board_layout)
+                        : boardStateCache.boardLayout;
+                    const markedPos = data.marked_positions !== undefined
+                        ? parsePosList(data.marked_positions)
+                        : boardStateCache.markedPositions;
+                    const revPos = data.revealed_positions !== undefined
+                        ? parsePosList(data.revealed_positions)
+                        : boardStateCache.revealedPositions;
+                    const decodingPos = data.decoding_positions !== undefined
+                        ? parsePosList(data.decoding_positions)
+                        : boardStateCache.decodingPositions;
+                    const isFull = data.is_full_reveal !== undefined
+                        ? !!data.is_full_reveal
+                        : boardStateCache.isFullReveal;
+
+                    if (data.puzzle_text !== undefined || data.board_layout !== undefined
+                        || data.revealed_chars !== undefined || data.marked_positions !== undefined
+                        || data.revealed_positions !== undefined || data.decoding_positions !== undefined
+                        || data.category !== undefined || data.is_full_reveal !== undefined) {
+                        updateBoard(
+                            data.puzzle_text !== undefined ? (data.puzzle_text || "") : boardStateCache.puzzle_text,
+                            rev,
+                            data.category !== undefined ? (data.category || "") : boardStateCache.category,
+                            lay,
+                            markedPos,
+                            revPos,
+                            isFull,
+                            decodingPos
+                        );
+                    }
+                    applyLights(data);
+                })
+                .subscribe();
+        };
+
+        function applyLights(data) {
+            const lights = {
+                red: data.light_red || 'color',
+                yellow: data.light_yellow || 'color',
+                blue: data.light_blue || 'color'
+            };
+
+            const defaultStyles = {
+                red: { bg: '#ff0000', color: '#ffffff' },
+                yellow: { bg: '#ffff00', color: '#000000' },
+                blue: { bg: '#0000ff', color: '#ffffff' }
+            };
+
+            ['red', 'yellow', 'blue'].forEach(color => {
+                const elements = document.querySelectorAll(`.score-box.${color}`);
+
+                elements.forEach(el => {
+                    if (lights[color] === 'black') {
+                        el.style.setProperty('background', '#000000', 'important');
+                        el.style.setProperty('color', '#ffffff', 'important');
+                    } else if (lights[color] === 'white') {
+                        el.style.setProperty('background', '#ffffff', 'important');
+                        el.style.setProperty('color', '#000000', 'important');
+                    } else {
+                        el.style.setProperty('background', defaultStyles[color].bg, 'important');
+                        el.style.setProperty('color', defaultStyles[color].color, 'important');
+                    }
+                });
+            });
+        }
+
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('keydown', e => {
+            if (e.keyCode === 123) e.preventDefault();
+            if (e.ctrlKey && (e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) || (e.keyCode === 85)) {
+                e.preventDefault();
+            }
+        });
+    </script>
+</body>
+
+</html>
