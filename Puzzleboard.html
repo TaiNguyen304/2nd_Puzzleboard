@@ -84,8 +84,8 @@
         }
 
         #board {
-            display: grid;
-            grid-template-rows: repeat(4, 1fr);
+            display: flex;
+            flex-direction: column;
             gap: 6px;
             background: var(--deep-bg);
             padding: 30px;
@@ -132,10 +132,7 @@
             border-radius: 0px;
 
             background-color: #61a252;
-            background-image: url("Ô chữ.png");
-            background-size: 110% 110%;
-            background-position: center;
-            background-repeat: no-repeat;
+            background-image: none;
 
             display: flex;
             justify-content: center;
@@ -172,10 +169,7 @@
         }
 
         .cell.decoding {
-            background-image: url("Giải mã.png");
-            background-size: 110% 110%;
-            background-position: center;
-            background-repeat: no-repeat;
+            background-image: none;
             background-color: #ffcc00;
             box-shadow: inset 0 0 0 2px #000;
             color: transparent;
@@ -186,7 +180,7 @@
             justify-content: center;
             gap: 6px;
             width: fit-content;
-            margin: 0 auto 6px auto;
+            margin: 0 auto;
             user-select: none;
         }
 
@@ -258,8 +252,9 @@
     </div>
     <div id="category-display">- CHƯA CÓ CHỦ ĐỀ -</div>
     <div id="puzzle-main-container">
-        <div id="round-banner" class="banner-row" style="display:none;"></div>
-        <div id="board"></div>
+        <div id="board">
+            <div id="round-banner" class="banner-row" style="display:none;"></div>
+        </div>
     </div>
 
     <audio id="globalSound" preload="auto"></audio>
@@ -451,7 +446,17 @@
 
         function createBoard() {
             const board = document.getElementById('board');
+            let bannerEl = document.getElementById('round-banner');
             board.innerHTML = '';
+            if (bannerEl) {
+                board.appendChild(bannerEl);
+            } else {
+                bannerEl = document.createElement('div');
+                bannerEl.id = 'round-banner';
+                bannerEl.className = 'banner-row';
+                bannerEl.style.display = 'none';
+                board.appendChild(bannerEl);
+            }
             const config = [16, 16, 16, 16];
 
             config.forEach((count, rIdx) => {
@@ -493,10 +498,7 @@
                 target.classList.remove('active', 'revealed', 'marked');
                 target.classList.add('decoding');
                 target.innerText = '';
-                target.style.backgroundImage = 'url("Giải mã.png")';
-                target.style.backgroundSize = '110% 110%';
-                target.style.backgroundPosition = 'center';
-                target.style.backgroundRepeat = 'no-repeat';
+                target.style.backgroundImage = 'none';
                 target.style.backgroundColor = '#ffcc00';
             };
 
@@ -584,16 +586,17 @@
 
         function renderRoundBanner(text) {
             let bannerEl = document.getElementById('round-banner');
+            const board = document.getElementById('board');
             if (!bannerEl) {
-                const container = document.getElementById('puzzle-main-container');
-                const board = document.getElementById('board');
-                if (container && board) {
+                if (board) {
                     bannerEl = document.createElement('div');
                     bannerEl.id = 'round-banner';
-                    container.insertBefore(bannerEl, board);
+                    board.insertBefore(bannerEl, board.firstChild);
                 } else {
                     return;
                 }
+            } else if (board && board.firstChild !== bannerEl) {
+                board.insertBefore(bannerEl, board.firstChild);
             }
 
             const bannerText = String(text || '').trim().toUpperCase();
