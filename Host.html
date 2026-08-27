@@ -133,7 +133,7 @@
         @font-face {
             font-family: 'Myriad Pro Semibold';
             src: url('MYRIADPRO-SEMIBOLD.OTF') format('opentype'), url('MYRIADPRO-SEMIBOLD.OTF');
-            font-weight: 600;
+            font-weight: bold;
             font-style: normal;
         }
 
@@ -221,7 +221,7 @@
         }
 
         .player-score-card {
-            border-radius: 8px;
+            border-radius: 0px;
             padding: 10px;
             border: 2px solid #333;
         }
@@ -268,7 +268,7 @@
         .score-sub-box {
             padding: 6px;
             text-align: center;
-            border-radius: 4px;
+            border-radius: 0px;
             font-size: 1.1rem;
         }
 
@@ -410,14 +410,15 @@
             align-items: center;
             width: 80px;
             height: 80px;
-            background: #ff00cc;
-            color: #fff;
+            background: #ffffff;
+            color: #000000;
+            font-family: 'Myriad Pro Semibold', 'Myriad Pro', sans-serif;
             font-size: 2.5rem;
-            border-radius: 12px;
-            font-weight: 900;
-            box-shadow: 0 0 15px rgba(255, 0, 204, 0.6);
+            border-radius: 0px;
+            font-weight: bold;
+            box-shadow: none;
             margin-top: 15px;
-            border: 3px solid #fff;
+            border: 3px solid #000000;
         }
 
         #no-roomid-msg {
@@ -991,6 +992,12 @@
             if (!borderColorStr) return;
             let color = borderColorStr;
             let bannerText = '';
+            if (color.includes('|ALLOWED_BUZZER:')) {
+                color = color.split('|ALLOWED_BUZZER:')[0];
+            }
+            if (color.includes('|TIMERPOS:')) {
+                color = color.split('|TIMERPOS:')[0];
+            }
             if (color.includes('|BANNER:')) {
                 const parts = color.split('|BANNER:');
                 color = parts[0];

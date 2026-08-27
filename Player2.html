@@ -73,7 +73,7 @@
             justify-content: center;
             align-items: center;
             font-size: 2.5rem;
-            border-radius: 10px;
+            border-radius: 0px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
             overflow: hidden;
             border: 3px solid #fff;
@@ -139,7 +139,7 @@
         @font-face {
             font-family: 'Myriad Pro Semibold';
             src: url('MYRIADPRO-SEMIBOLD.OTF') format('opentype'), url('MYRIADPRO-SEMIBOLD.OTF');
-            font-weight: 600;
+            font-weight: bold;
             font-style: normal;
         }
 
@@ -261,7 +261,7 @@
             justify-content: center;
             align-items: center;
             font-size: 1.8rem;
-            border-radius: 10px;
+            border-radius: 0px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
             border: 3px solid #fff;
             background: purple;
@@ -314,7 +314,7 @@
 
         #buzzer-btn.open:hover {
             background: orange;
-            color: #fff;
+            color: #000;
             border-color: orange;
         }
 
@@ -324,14 +324,15 @@
             align-items: center;
             width: 70px;
             height: 70px;
-            background: #ff00cc;
-            color: #fff;
+            background: #ffffff;
+            color: #000000;
+            font-family: 'Myriad Pro Semibold', 'Myriad Pro', sans-serif;
             font-size: 2rem;
-            border-radius: 10px;
-            font-weight: 900;
-            box-shadow: 0 0 15px rgba(255, 0, 204, 0.6);
+            border-radius: 0px;
+            font-weight: bold;
+            box-shadow: none;
             margin-bottom: 15px;
-            border: 3px solid #fff;
+            border: 3px solid #000000;
         }
 
         audio {
@@ -648,10 +649,28 @@
             if (side3) side3.innerText = `P3: ${format(data[`score_blue_${mode}`])}`;
         };
 
+        let currentBorderColor = '';
+
+        function getAllowedBuzzerPlayer(data) {
+            const bc = (data && data.border_color) ? data.border_color : currentBorderColor;
+            if (bc && bc.includes('|ALLOWED_BUZZER:')) {
+                const val = bc.split('|ALLOWED_BUZZER:')[1];
+                const p = val ? val.split('|')[0] : 'all';
+                return p || 'all';
+            }
+            return 'all';
+        }
+
         const updateBuzzerUI = (data) => {
+            if (data && data.border_color) {
+                currentBorderColor = data.border_color;
+            }
             const buzzedPlayer = data.buzzer_player;
             const isLocked = data.is_buzzer_locked || false;
-            const PLAYER_ID = 1;
+            const PLAYER_ID = 2;
+            const allowed = getAllowedBuzzerPlayer(data);
+            const isThisPlayerAllowed = (allowed === 'all' || allowed === '' || allowed === '0' || Number(allowed) === PLAYER_ID);
+
             const buzzerBtn = document.getElementById('buzzer-btn');
             const side1 = document.getElementById('side-score-1');
             const side2 = document.getElementById('side-score-2');
@@ -678,9 +697,10 @@
             } else {
                 // 4. Khi buzzer_player là null (reset chuông)
                 if (buzzerBtn) {
-                    buzzerBtn.className = isLocked ? 'locked' : 'open';
-                    buzzerBtn.disabled = isLocked;
-                    buzzerBtn.innerText = isLocked ? 'ĐANG KHÓA' : 'BẤM CHUÔNG';
+                    const effectiveLocked = isLocked || !isThisPlayerAllowed;
+                    buzzerBtn.className = effectiveLocked ? 'locked' : 'open';
+                    buzzerBtn.disabled = effectiveLocked;
+                    buzzerBtn.innerText = effectiveLocked ? 'ĐANG KHÓA' : 'BẤM CHUÔNG';
                 }
             }
         };
@@ -689,15 +709,44 @@
             const buzzerBtn = document.getElementById('buzzer-btn');
             if (!buzzerBtn || buzzerBtn.classList.contains('locked') || buzzerBtn.disabled) return;
 
-            let pColor = '#ff0000'; // Đỏ cho Player 1
-            if (PLAYER_ID === 2) pColor = '#ffff00'; // Vàng cho Player 2
-            if (PLAYER_ID === 3) pColor = '#0000ff'; // Xanh dương cho Player 3
+            const PLAYER_ID = 2;
+            let pColor = '#ffff00'; // Vàng cho Player 2
+
+            const { data: latestGame } = await db.from('wheel_game')
+                .select('border_color, is_buzzer_locked, buzzer_player')
+                .eq('room_id', getRoomFilterValue())
+                .maybeSingle();
+
+            if (latestGame) {
+                const allowed = getAllowedBuzzerPlayer(latestGame);
+                if (allowed !== 'all' && allowed !== '' && allowed !== '0' && Number(allowed) !== PLAYER_ID) {
+                    console.log("Bạn không được phép bấm chuông ở lượt này.");
+                    return;
+                }
+            }
+
+            let newBorder = pColor;
+            if (latestGame && latestGame.border_color) {
+                let bc = latestGame.border_color;
+                if (bc.includes('|BANNER:')) {
+                    const banner = bc.split('|BANNER:')[1].split('|')[0];
+                    newBorder += `|BANNER:${banner}`;
+                }
+                if (bc.includes('|TIMERPOS:')) {
+                    const tpos = bc.split('|TIMERPOS:')[1].split('|')[0];
+                    newBorder += `|TIMERPOS:${tpos}`;
+                }
+                if (bc.includes('|ALLOWED_BUZZER:')) {
+                    const ab = bc.split('|ALLOWED_BUZZER:')[1].split('|')[0];
+                    newBorder += `|ALLOWED_BUZZER:${ab}`;
+                }
+            }
 
             // Gửi yêu cầu cập nhật chuông chống tranh chấp (Chỉ cập nhật nếu buzzer_player là null)
             const { data, error } = await db.from('wheel_game')
                 .update({
-                    buzzer_player: PLAYER_ID, // Ví dụ: 'red'
-                    border_color: pColor      // Màu viền tương ứng
+                    buzzer_player: PLAYER_ID, // Ví dụ: 'yellow'
+                    border_color: newBorder   // Màu viền tương ứng
                 })
                 .eq('room_id', getRoomFilterValue())
                 // Chấp nhận bấm nếu buzzer_player đang trống (NULL hoặc "")
@@ -763,8 +812,15 @@
 
         function applyBorderColor(rawColor) {
             if (!rawColor) return;
+            currentBorderColor = rawColor;
             let color = rawColor;
             let bannerText = '';
+            if (color.includes('|ALLOWED_BUZZER:')) {
+                color = color.split('|ALLOWED_BUZZER:')[0];
+            }
+            if (color.includes('|TIMERPOS:')) {
+                color = color.split('|TIMERPOS:')[0];
+            }
             if (color.includes('|BANNER:')) {
                 const parts = color.split('|BANNER:');
                 color = parts[0];

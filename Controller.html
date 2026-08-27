@@ -98,7 +98,7 @@
 
         button:hover:not(:disabled) {
             background: orange !important;
-            color: white !important;
+            color: black !important;
             transform: scale(1.02);
         }
 
@@ -213,7 +213,7 @@
 
         .btn-action {
             background: var(--pink);
-            color: #fff;
+            color: #000;
             padding: 12px;
             font-size: 0.85rem;
             flex: 1;
@@ -287,6 +287,7 @@
 
         .btn-create-room:hover {
             background-color: #ffa500;
+            color: #000000;
         }
 
         .room-info-box {
@@ -422,11 +423,11 @@
 
             <p style="color:var(--pink); margin: 15px 0 5px 0; font-size: 0.8rem;">CÂU HỎI PHỤ VÒNG ĐẶC BIỆT:</p>
             <div class="grid-buttons">
-                <button style="background: #ff00cc; color: white;" onclick="handleRound('ĐB5.1', true)">ĐB 5.1</button>
-                <button style="background: #ff00cc; color: white;" onclick="handleRound('ĐB5.2', false)">ĐB 5.2</button>
-                <button style="background: #ff00cc; color: white;" onclick="handleRound('ĐB5.3', false)">ĐB 5.3</button>
-                <button style="background: #ff00cc; color: white;" onclick="handleRound('ĐB5.4', false)">ĐB 5.4</button>
-                <button style="background: #ff00cc; color: white;" onclick="handleRound('ĐB5.5', false)">ĐB 5.5</button>
+                <button style="background: #ff00cc; color: black;" onclick="handleRound('ĐB5.1', true)">ĐB 5.1</button>
+                <button style="background: #ff00cc; color: black;" onclick="handleRound('ĐB5.2', false)">ĐB 5.2</button>
+                <button style="background: #ff00cc; color: black;" onclick="handleRound('ĐB5.3', false)">ĐB 5.3</button>
+                <button style="background: #ff00cc; color: black;" onclick="handleRound('ĐB5.4', false)">ĐB 5.4</button>
+                <button style="background: #ff00cc; color: black;" onclick="handleRound('ĐB5.5', false)">ĐB 5.5</button>
             </div>
 
             <p style="color:var(--pink); margin: 15px 0 5px 0; font-size: 0.8rem;">ĐIỀU KHIỂN CHUÔNG TÍN HIỆU:</p>
@@ -497,6 +498,50 @@
                 </div>
             </div>
 
+            <div id="db5-panel"
+                style="display:none; margin-top:15px; border: 1px dashed var(--neon); padding: 10px; background: #1a1a1a;">
+                <p style="color:var(--neon); margin:0 0 10px 0; font-size:0.8rem; font-weight:bold;">ĐIỀU KHIỂN CÂU HỎI PHỤ ĐẶC BIỆT (ĐB 5.1 - ĐB 5.5):</p>
+                
+                <div style="margin-bottom: 12px;">
+                    <label style="color:#ffffff; font-size:0.75rem; display:block; margin-bottom:5px; font-weight:bold;">CHỌN PLAYER ĐƯỢC MỞ CHUÔNG:</label>
+                    <div style="display: flex; gap: 8px;">
+                        <select id="select-db5-player"
+                            style="flex: 1; padding: 8px; background: #000; color: #fff; border: 1px solid #777; font-weight: bold; font-size: 0.85rem;">
+                            <option value="1">Player 1 (Đỏ)</option>
+                            <option value="2">Player 2 (Vàng)</option>
+                            <option value="3">Player 3 (Xanh dương)</option>
+                        </select>
+                        <button onclick="confirmDB5Player()"
+                            style="background: rgb(0, 128, 0); color: #ffffff; padding: 8px 14px; font-size: 0.8rem; border: none; font-weight: bold; cursor: pointer; border-radius: 4px;">
+                            XÁC NHẬN
+                        </button>
+                    </div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <button onclick="db5SetTimer45()"
+                        style="background: #ff0000; color: #ffffff; padding: 10px; font-size: 0.85rem; font-weight: bold; border: none; cursor: pointer; border-radius: 4px; text-transform: uppercase;">
+                        Đặt thời gian (45s)
+                    </button>
+                    <button onclick="db5RevealNghiaAndRandom()"
+                        style="background: #ffff00; color: #000000; padding: 10px; font-size: 0.85rem; font-weight: bold; border: none; cursor: pointer; border-radius: 4px; text-transform: uppercase;">
+                        Mở chữ NGHIA và ngẫu nhiên
+                    </button>
+                    <button onclick="db5Stop()"
+                        style="background: #0000ff; color: #ffffff; padding: 10px; font-size: 0.85rem; font-weight: bold; border: none; cursor: pointer; border-radius: 4px; text-transform: uppercase;">
+                        Dừng hiện chữ
+                    </button>
+                    <button onclick="db5Resume()"
+                        style="background: #800080; color: #ffffff; padding: 10px; font-size: 0.85rem; font-weight: bold; border: none; cursor: pointer; border-radius: 4px; text-transform: uppercase;">
+                        Tiếp tục hiện chữ
+                    </button>
+                    <button onclick="db5ResetBoard()"
+                        style="background: #ff00cc; color: #000000; padding: 10px; font-size: 0.85rem; font-weight: bold; border: none; cursor: pointer; border-radius: 4px; text-transform: uppercase;">
+                        Reset bảng trống
+                    </button>
+                </div>
+            </div>
+
             <div id="special-round-timer-panel"
                 style="display:none; margin-top:15px; border: 1px dashed #666; padding: 10px;">
                 <p style="color:var(--neon); margin:0 0 10px 0; font-size:0.8rem;">ĐIỀU KHIỂN ĐỒNG HỒ VÒNG PHỤ & ĐB:</p>
@@ -507,6 +552,87 @@
                         onclick="setTimer(10)">10 Giây</button>
                     <button style="background: red; color: white; flex: 1; font-size: 0.75rem; padding: 8px 2px;"
                         onclick="resetCountdown()">Reset Đồng Hồ</button>
+                </div>
+
+                <div style="margin-top: 10px; border-top: 1px dashed #555; padding-top: 10px;">
+                    <label style="color:var(--neon); font-size:0.8rem; display:block; margin-bottom:5px; font-weight:bold;">ĐẶT ĐỒNG HỒ LÊN BẢNG:</label>
+                    <select id="select-board-timer-pos"
+                        style="width:100%; padding:8px; background:#000; color:var(--neon); border:1px solid var(--neon); margin-bottom:8px; font-weight:bold;">
+                        <option value="1">Ô 1 (H1-C1)</option>
+                        <option value="2">Ô 2 (H1-C2)</option>
+                        <option value="3">Ô 3 (H1-C3)</option>
+                        <option value="4">Ô 4 (H1-C4)</option>
+                        <option value="5">Ô 5 (H1-C5)</option>
+                        <option value="6">Ô 6 (H1-C6)</option>
+                        <option value="7">Ô 7 (H1-C7)</option>
+                        <option value="8">Ô 8 (H1-C8)</option>
+                        <option value="9">Ô 9 (H1-C9)</option>
+                        <option value="10">Ô 10 (H1-C10)</option>
+                        <option value="11">Ô 11 (H1-C11)</option>
+                        <option value="12">Ô 12 (H1-C12)</option>
+                        <option value="13">Ô 13 (H1-C13)</option>
+                        <option value="14">Ô 14 (H1-C14)</option>
+                        <option value="15">Ô 15 (H1-C15)</option>
+                        <option value="16">Ô 16 (H1-C16)</option>
+                        <option value="17">Ô 17 (H2-C1)</option>
+                        <option value="18">Ô 18 (H2-C2)</option>
+                        <option value="19">Ô 19 (H2-C3)</option>
+                        <option value="20">Ô 20 (H2-C4)</option>
+                        <option value="21">Ô 21 (H2-C5)</option>
+                        <option value="22">Ô 22 (H2-C6)</option>
+                        <option value="23">Ô 23 (H2-C7)</option>
+                        <option value="24">Ô 24 (H2-C8)</option>
+                        <option value="25">Ô 25 (H2-C9)</option>
+                        <option value="26">Ô 26 (H2-C10)</option>
+                        <option value="27">Ô 27 (H2-C11)</option>
+                        <option value="28">Ô 28 (H2-C12)</option>
+                        <option value="29">Ô 29 (H2-C13)</option>
+                        <option value="30">Ô 30 (H2-C14)</option>
+                        <option value="31">Ô 31 (H2-C15)</option>
+                        <option value="32">Ô 32 (H2-C16)</option>
+                        <option value="33">Ô 33 (H3-C1)</option>
+                        <option value="34">Ô 34 (H3-C2)</option>
+                        <option value="35">Ô 35 (H3-C3)</option>
+                        <option value="36">Ô 36 (H3-C4)</option>
+                        <option value="37">Ô 37 (H3-C5)</option>
+                        <option value="38">Ô 38 (H3-C6)</option>
+                        <option value="39">Ô 39 (H3-C7)</option>
+                        <option value="40">Ô 40 (H3-C8)</option>
+                        <option value="41">Ô 41 (H3-C9)</option>
+                        <option value="42">Ô 42 (H3-C10)</option>
+                        <option value="43">Ô 43 (H3-C11)</option>
+                        <option value="44">Ô 44 (H3-C12)</option>
+                        <option value="45">Ô 45 (H3-C13)</option>
+                        <option value="46">Ô 46 (H3-C14)</option>
+                        <option value="47">Ô 47 (H3-C15)</option>
+                        <option value="48">Ô 48 (H3-C16)</option>
+                        <option value="49">Ô 49 (H4-C1)</option>
+                        <option value="50">Ô 50 (H4-C2)</option>
+                        <option value="51">Ô 51 (H4-C3)</option>
+                        <option value="52">Ô 52 (H4-C4)</option>
+                        <option value="53">Ô 53 (H4-C5)</option>
+                        <option value="54">Ô 54 (H4-C6)</option>
+                        <option value="55">Ô 55 (H4-C7)</option>
+                        <option value="56">Ô 56 (H4-C8)</option>
+                        <option value="57">Ô 57 (H4-C9)</option>
+                        <option value="58">Ô 58 (H4-C10)</option>
+                        <option value="59">Ô 59 (H4-C11)</option>
+                        <option value="60">Ô 60 (H4-C12)</option>
+                        <option value="61">Ô 61 (H4-C13)</option>
+                        <option value="62">Ô 62 (H4-C14)</option>
+                        <option value="63">Ô 63 (H4-C15)</option>
+                        <option value="64">Ô 64 (H4-C16)</option>
+                    </select>
+                    <div style="display: flex; gap: 8px;">
+                        <button onclick="setBoardTimerPosition()"
+                            style="flex: 1; background: rgb(0, 128, 0); color: white; padding: 8px; font-size: 0.8rem; border: none; cursor: pointer; text-transform: uppercase; font-weight: bold !important;">
+                            XÁC NHẬN
+                        </button>
+                        <button onclick="hideBoardTimer()"
+                            style="flex: 1; background: rgb(128, 0, 128); color: white; padding: 8px; font-size: 0.8rem; border: none; cursor: pointer; text-transform: uppercase; font-weight: bold !important;">
+                            ẨN ĐỒNG HỒ
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -888,7 +1014,7 @@
                     playBuzzer();
                     quickStop();
                 }
-                lastBuzzerState = bp;
+                lastBuzzerState = (n != null && !isNaN(n)) ? n : null;
             }).subscribe();
         }
 
@@ -1100,6 +1226,15 @@
                 updateScoreUI();
                 renderKeyboard();
                 if ('buzzer_player' in data) lastBuzzerState = data.buzzer_player;
+
+                if (data.border_color && data.border_color.includes('|TIMERPOS:')) {
+                    const posStr = data.border_color.split('|TIMERPOS:')[1];
+                    const posNum = parseInt(posStr, 10);
+                    if (!isNaN(posNum) && posNum >= 1 && posNum <= 64) {
+                        const selectEl = document.getElementById('select-board-timer-pos');
+                        if (selectEl) selectEl.value = String(posNum);
+                    }
+                }
             }
         }
 
@@ -1223,18 +1358,21 @@
                 return;
             }
 
-            const isQuick = ["Đoán Nhanh", "ĐNLH"].some(t => roundName.includes(t)) || roundName.includes('ĐB5.');
+            const isDB5 = /ĐB\s*5\.[1-5]/i.test(roundName) || /ĐB5\.[1-5]/i.test(roundName);
+            const isQuick = (["Đoán Nhanh", "ĐNLH"].some(t => roundName.includes(t)) || roundName.toLowerCase().includes('đoán nhanh')) && !isDB5;
             const rnLower = roundName.toLowerCase();
-            const isSpecialRound = rnLower.includes('vòng đặc biệt') || rnLower.includes('vòng phụ') || roundName.includes('ĐB');
+            const isSpecialRound = (rnLower.includes('vòng đặc biệt') || rnLower.includes('vòng phụ') || roundName.includes('ĐB')) && !isDB5;
             const isSpecialRoundOnly = rnLower.includes('vòng đặc biệt') || rnLower.includes('vòng phụ');
 
             document.getElementById('quick-panel').style.display = isQuick ? 'block' : 'none';
             document.getElementById('btn-ngiah').style.display = isSpecialRound ? 'block' : 'none';
             document.getElementById('special-guess-panel').style.display = isSpecialRound ? 'block' : 'none';
-            document.getElementById('special-round-timer-panel').style.display = isSpecialRoundOnly ? 'block' : 'none';
+            document.getElementById('special-round-timer-panel').style.display = (isSpecialRoundOnly || isDB5) ? 'block' : 'none';
+            const db5Panel = document.getElementById('db5-panel');
+            if (db5Panel) db5Panel.style.display = isDB5 ? 'block' : 'none';
 
             if (!hasPopup) {
-                if (/ĐB5\.[2-5]/.test(roundName)) {
+                if (/ĐB\s*5\.[2-5]/i.test(roundName) || /ĐB5\.[2-5]/i.test(roundName)) {
                     const opt = currentRoundData.Options[specialRoundCatIndex] || currentRoundData.Options[0];
                     sendToBoard(opt.cat, opt.layout);
                 } else {
@@ -1242,7 +1380,7 @@
                 }
             } else {
                 const actions = `
-            <button onclick="loadFixedPuzzle()" style="background: var(--pink);color: white; width: 100%; padding: 15px; margin-bottom: 10px;">Ô CHỮ CỐ ĐỊNH</button>
+            <button onclick="loadFixedPuzzle()" style="background: var(--pink);color: black; width: 100%; padding: 15px; margin-bottom: 10px;">Ô CHỮ CỐ ĐỊNH</button>
             <button onclick="showCategoryPicker()" style="background: red;color: white; width: 100%; padding: 15px;">CHỌN 1 TRONG 3 CHỦ ĐỀ</button>
         `;
                 showPopup(roundName, "Lựa chọn chế độ:", actions);
@@ -1406,30 +1544,328 @@
             await db.from('wheel_game').update({ pending_positions: '' }).eq('room_id', currentRoomId);
         }
 
-        async function quickStart() {
-            if (selectedRoundName && selectedRoundName.includes('ĐB5.')) {
-                await db.from('wheel_game').update({
-                    revealed_positions: "",
-                    marked_positions: "",
-                    pending_positions: "",
-                    revealed_chars: "",
+        async function updateBorderColorComponents(opts = {}, extraFields = {}) {
+            const { data: row } = await db.from('wheel_game').select('border_color').eq('room_id', currentRoomId).maybeSingle();
+            let raw = (row && row.border_color) ? row.border_color : 'rgb(128,0,128)';
+
+            let color = 'rgb(128,0,128)';
+            let banner = '';
+            let timerPos = '';
+            let allowedBuzzer = '';
+
+            let temp = raw;
+            if (temp.includes('|ALLOWED_BUZZER:')) {
+                const parts = temp.split('|ALLOWED_BUZZER:');
+                temp = parts[0];
+                allowedBuzzer = parts[1] ? parts[1].split('|')[0] : '';
+            }
+            if (temp.includes('|TIMERPOS:')) {
+                const parts = temp.split('|TIMERPOS:');
+                temp = parts[0];
+                timerPos = parts[1] ? parts[1].split('|')[0] : '';
+            }
+            if (temp.includes('|BANNER:')) {
+                const parts = temp.split('|BANNER:');
+                temp = parts[0];
+                banner = parts[1] ? parts[1].split('|')[0] : '';
+            }
+            if (temp) color = temp;
+
+            if ('color' in opts) color = opts.color;
+            if ('banner' in opts) banner = opts.banner;
+            if ('timerPos' in opts) timerPos = opts.timerPos;
+            if ('allowedBuzzer' in opts) allowedBuzzer = opts.allowedBuzzer;
+
+            let result = color;
+            if (banner !== undefined && banner !== '') result += `|BANNER:${banner}`;
+            if (timerPos !== undefined && timerPos !== '') result += `|TIMERPOS:${timerPos}`;
+            if (allowedBuzzer !== undefined && allowedBuzzer !== '' && allowedBuzzer !== 'all') result += `|ALLOWED_BUZZER:${allowedBuzzer}`;
+
+            const updatePayload = { border_color: result, ...extraFields };
+            await db.from('wheel_game').update(updatePayload).eq('room_id', currentRoomId);
+            return result;
+        }
+
+        let selectedDB5Player = 1;
+
+        async function confirmDB5Player() {
+            if (!currentRoomId) {
+                showPopup("Thông báo", "Vui lòng chọn hoặc tạo phòng trước!");
+                return;
+            }
+            const selectEl = document.getElementById('select-db5-player');
+            selectedDB5Player = selectEl ? (parseInt(selectEl.value, 10) || 1) : 1;
+            await updateBorderColorComponents({ allowedBuzzer: String(selectedDB5Player) });
+            showPopup("Vòng Đặc Biệt", `Đã xác nhận mở chuông riêng cho Player ${selectedDB5Player}! (Khóa chuông 2 người còn lại)`);
+        }
+
+        async function db5SetTimer45() {
+            if (!currentRoomId) {
+                showPopup("Thông báo", "Vui lòng chọn hoặc tạo phòng trước!");
+                return;
+            }
+            countdownValue = 45;
+            document.getElementById('st-timer').innerText = countdownValue;
+            stopCountdown();
+            await db.from('wheel_game').update({ timer: countdownValue }).eq('room_id', currentRoomId);
+            console.log("Đã đặt thời gian về 45s cho câu hỏi phụ ĐB");
+        }
+
+        async function db5RevealNghiaAndRandom() {
+            if (!currentRoomId) {
+                showPopup("Thông báo", "Vui lòng chọn hoặc tạo phòng trước!");
+                return;
+            }
+            if (quickInterval) clearInterval(quickInterval);
+            stopCountdown();
+
+            if (!currentLayout) {
+                const { data: bg } = await db.from('wheel_game').select('board_layout').eq('room_id', currentRoomId).maybeSingle();
+                if (bg && bg.board_layout) {
+                    try {
+                        currentLayout = typeof bg.board_layout === 'string' ? JSON.parse(bg.board_layout) : bg.board_layout;
+                    } catch (e) {
+                        console.error("Lỗi parse board_layout:", e);
+                    }
+                }
+            }
+
+            if (!currentLayout) {
+                showPopup("Thông báo", "Vui lòng chọn vòng và tải ô chữ trước!");
+                return;
+            }
+
+            const targetChars = ['N', 'G', 'H', 'I', 'A'];
+            let nghiaPositions = [];
+
+            for (let r = 0; r < 4; r++) {
+                for (let c = 0; c < 16; c++) {
+                    let cellVal = currentLayout[r] ? currentLayout[r][c] : null;
+                    let cellChar = typeof getCharFromCell === 'function' ? getCharFromCell(cellVal) : cellVal;
+                    if (cellChar) {
+                        if (cellChar === 'Ă' || cellChar === 'Â') continue;
+
+                        let norm = cellChar.normalize('NFD')
+                            .replace(/[̣̀́̃̉]/g, '')
+                            .normalize('NFC')
+                            .toUpperCase();
+
+                        if (targetChars.includes(norm)) {
+                            let pos = rcToPosition(r, c);
+                            if (pos && !nghiaPositions.includes(pos)) nghiaPositions.push(pos);
+                        }
+                    }
+                }
+            }
+
+            targetChars.forEach(char => {
+                if (!usedChars.includes(char)) usedChars.push(char);
+            });
+            renderKeyboard();
+
+            const selectEl = document.getElementById('select-db5-player');
+            if (selectEl) {
+                selectedDB5Player = parseInt(selectEl.value, 10) || 1;
+            }
+
+            const { data: row } = await db.from('wheel_game').select('revealed_positions, marked_positions').eq('room_id', currentRoomId).maybeSingle();
+            let revPos = (row && row.revealed_positions) ? row.revealed_positions.split(',').filter(Boolean).map(Number) : [];
+            let marked = (row && row.marked_positions) ? row.marked_positions.split(',').filter(Boolean).map(Number) : [];
+
+            nghiaPositions.forEach(pos => {
+                if (!revPos.includes(pos)) revPos.push(pos);
+                marked = marked.filter(p => p !== pos);
+            });
+
+            countdownValue = 45;
+            document.getElementById('st-timer').innerText = countdownValue;
+            lastBuzzerState = null;
+
+            await updateBorderColorComponents(
+                {
+                    color: 'rgb(255,255,255)',
+                    allowedBuzzer: String(selectedDB5Player)
+                },
+                {
+                    revealed_positions: revPos.join(','),
+                    marked_positions: marked.join(','),
+                    pending_positions: '',
+                    revealed_chars: usedChars.join(','),
                     is_buzzer_locked: false,
                     buzzer_player: "",
-                    border_color: 'rgb(128,0,128)'
-                }).eq('room_id', currentRoomId);
-                usedChars = [];
-                renderKeyboard();
+                    timer: 45
+                }
+            );
 
-                await revealNghia();
+            startCountdown();
+            startRandomLetterReveal();
+        }
 
-                setTimeout(() => {
-                    quickResume();
-                }, 1500);
-            } else {
-                usedChars = [];
-                await db.from('wheel_game').update({ revealed_chars: "", pending_positions: "" }).eq('room_id', currentRoomId);
-                quickResume();
+        function db5Stop() {
+            if (quickInterval) clearInterval(quickInterval);
+            stopCountdown();
+            console.log("Đã dừng hiện chữ và dừng đồng hồ ĐB");
+        }
+
+        async function db5Resume() {
+            if (!currentRoomId) {
+                showPopup("Thông báo", "Vui lòng chọn hoặc tạo phòng trước!");
+                return;
             }
+            if (quickInterval) clearInterval(quickInterval);
+            if (countdownInterval) clearInterval(countdownInterval);
+
+            const selectEl = document.getElementById('select-db5-player');
+            if (selectEl) {
+                selectedDB5Player = parseInt(selectEl.value, 10) || 1;
+            }
+
+            // Đồng bộ lại thời gian từ DB nếu biến đếm hiện tại không hợp lệ
+            if (countdownValue <= 0) {
+                const { data: gameRow } = await db.from('wheel_game').select('timer').eq('room_id', currentRoomId).maybeSingle();
+                if (gameRow && gameRow.timer > 0) {
+                    countdownValue = gameRow.timer;
+                } else {
+                    countdownValue = 45;
+                }
+            }
+            document.getElementById('st-timer').innerText = countdownValue;
+
+            // Xóa cờ buzzer để tránh ngắt nhầm khi nhận realtime event
+            lastBuzzerState = null;
+
+            // 1. Khung bảng ô chữ trở về màu trắng
+            // 4. Chuông của player được chọn được mở lại
+            await updateBorderColorComponents(
+                {
+                    color: 'rgb(255,255,255)',
+                    allowedBuzzer: String(selectedDB5Player)
+                },
+                {
+                    is_buzzer_locked: false,
+                    buzzer_player: ""
+                }
+            );
+
+            // 3. Đồng hồ tính tiếp số thời gian còn lại
+            startCountdown();
+
+            // 2. Các chữ cái còn lại tiếp tục lần lượt được lật mở
+            startRandomLetterReveal();
+        }
+
+        async function db5ResetBoard() {
+            if (!currentRoomId) {
+                showPopup("Thông báo", "Vui lòng chọn hoặc tạo phòng trước!");
+                return;
+            }
+            quickStop();
+
+            const selectEl = document.getElementById('select-db5-player');
+            if (selectEl) {
+                selectedDB5Player = parseInt(selectEl.value, 10) || 1;
+            }
+
+            await updateBorderColorComponents(
+                {
+                    color: 'rgb(255,255,255)',
+                    allowedBuzzer: String(selectedDB5Player)
+                },
+                {
+                    puzzle_text: "",
+                    category: "",
+                    revealed_chars: "",
+                    pending_positions: "",
+                    marked_positions: "",
+                    revealed_positions: "",
+                    board_layout: "[]",
+                    is_full_reveal: false,
+                    decoding_positions: "",
+                    is_buzzer_locked: false,
+                    buzzer_player: ""
+                }
+            );
+            usedChars = [];
+            currentLayout = null;
+            currentPuzzleRaw = "";
+            document.getElementById('st-puz').innerText = "-";
+            document.getElementById('st-cat').innerText = "-";
+            renderKeyboard();
+            console.log("Đã reset bảng trống đặc biệt với viền màu trắng");
+        }
+
+        function startRandomLetterReveal() {
+            if (quickInterval) clearInterval(quickInterval);
+
+            quickInterval = setInterval(async () => {
+                try {
+                    if (!currentLayout) {
+                        const { data: bg } = await db.from('wheel_game').select('board_layout').eq('room_id', currentRoomId).maybeSingle();
+                        if (bg && bg.board_layout) {
+                            try {
+                                currentLayout = typeof bg.board_layout === 'string' ? JSON.parse(bg.board_layout) : bg.board_layout;
+                            } catch (e) {
+                                console.error("Lỗi parse board_layout:", e);
+                            }
+                        }
+                    }
+                    if (!currentLayout) return;
+
+                    const { data } = await db.from('wheel_game').select('revealed_positions').eq('room_id', currentRoomId).single();
+                    let revPos = data && data.revealed_positions ? data.revealed_positions.split(',').filter(Boolean).map(Number) : [];
+
+                    let availablePositions = [];
+                    for (let r = 0; r < 4; r++) {
+                        for (let c = 0; c < 16; c++) {
+                            let cellVal = currentLayout[r] ? currentLayout[r][c] : null;
+                            let char = typeof getCharFromCell === 'function' ? getCharFromCell(cellVal) : cellVal;
+                            if (char && String(char).trim() !== "") {
+                                let pos = rcToPosition(r, c);
+                                if (pos && !revPos.includes(pos)) {
+                                    availablePositions.push(pos);
+                                }
+                            }
+                        }
+                    }
+
+                    if (availablePositions.length === 0) {
+                        clearInterval(quickInterval);
+                        return;
+                    }
+
+                    const randomPos = availablePositions[Math.floor(Math.random() * availablePositions.length)];
+                    revPos.push(randomPos);
+
+                    await db.from('wheel_game').update({
+                        revealed_positions: revPos.join(',')
+                    }).eq('room_id', currentRoomId);
+                } catch (err) {
+                    console.error("Lỗi trong startRandomLetterReveal:", err);
+                }
+            }, 700);
+        }
+
+        async function quickStart() {
+            usedChars = [];
+            renderKeyboard();
+            lastBuzzerState = null;
+
+            await updateBorderColorComponents(
+                {
+                    color: 'rgb(128,0,128)',
+                    allowedBuzzer: 'all'
+                },
+                {
+                    revealed_chars: "",
+                    pending_positions: "",
+                    revealed_positions: "",
+                    marked_positions: "",
+                    is_buzzer_locked: false,
+                    buzzer_player: ""
+                }
+            );
+
+            quickResume();
         }
 
         function quickStop() {
@@ -1438,48 +1874,33 @@
         }
 
         async function quickResume() {
+            if (!currentRoomId) return;
             if (quickInterval) clearInterval(quickInterval);
+            if (countdownInterval) clearInterval(countdownInterval);
 
-            if (selectedRoundName && selectedRoundName.includes('ĐB5.')) {
-                await db.from('wheel_game').update({
-                    is_buzzer_locked: false,
-                    buzzer_player: "",
-                    border_color: 'rgb(128,0,128)'
-                }).eq('room_id', currentRoomId);
+            lastBuzzerState = null;
 
-                startCountdown();
+            if (countdownValue <= 0) {
+                const { data: gameRow } = await db.from('wheel_game').select('timer').eq('room_id', currentRoomId).maybeSingle();
+                if (gameRow && gameRow.timer > 0) {
+                    countdownValue = gameRow.timer;
+                }
             }
+            document.getElementById('st-timer').innerText = countdownValue;
 
-            quickInterval = setInterval(async () => {
-                const { data } = await db.from('wheel_game').select('revealed_positions').eq('room_id', currentRoomId).single();
-                let revPos = data.revealed_positions ? data.revealed_positions.split(',').map(Number) : [];
-
-                let availablePositions = [];
-                for (let r = 0; r < 4; r++) {
-                    for (let c = 0; c < 16; c++) {
-                        let char = currentLayout[r][c];
-                        if (char && char.trim() !== "") {
-                            let pos = rcToPosition(r, c);
-                            if (pos && !revPos.includes(pos)) {
-                                availablePositions.push(pos);
-                            }
-                        }
-                    }
+            await updateBorderColorComponents(
+                {
+                    color: 'rgb(128,0,128)',
+                    allowedBuzzer: 'all'
+                },
+                {
+                    is_buzzer_locked: false,
+                    buzzer_player: ""
                 }
+            );
 
-                if (availablePositions.length === 0) {
-                    clearInterval(quickInterval);
-                    return;
-                }
-
-                const randomPos = availablePositions[Math.floor(Math.random() * availablePositions.length)];
-                revPos.push(randomPos);
-
-                await db.from('wheel_game').update({
-                    revealed_positions: revPos.join(',')
-                }).eq('room_id', currentRoomId);
-
-            }, 700);
+            startCountdown();
+            startRandomLetterReveal();
         }
 
         function startCountdown() {
@@ -1487,7 +1908,8 @@
             countdownInterval = setInterval(async () => {
                 if (countdownValue > 0) {
                     countdownValue--;
-                    document.getElementById('st-timer').innerText = countdownValue;
+                    const timerEl = document.getElementById('st-timer');
+                    if (timerEl) timerEl.innerText = countdownValue;
 
                     if (countdownValue === 0) {
                         quickStop();
@@ -1629,15 +2051,23 @@
 
         async function resetBoard() {
             quickStop();
-            await db.from('wheel_game').update({
-                puzzle_text: "", category: "", revealed_chars: "",
-                pending_positions: "",
-                marked_positions: "", revealed_positions: "",
-                board_layout: "[]", is_full_reveal: false,
-                decoding_positions: "",
-                revealed_chars: '',
-                border_color: 'rgb(128,0,128)'
-            }).eq('room_id', currentRoomId);
+            await updateBorderColorComponents(
+                {
+                    color: 'rgb(128,0,128)',
+                    allowedBuzzer: 'all'
+                },
+                {
+                    puzzle_text: "",
+                    category: "",
+                    revealed_chars: "",
+                    pending_positions: "",
+                    marked_positions: "",
+                    revealed_positions: "",
+                    board_layout: "[]",
+                    is_full_reveal: false,
+                    decoding_positions: ""
+                }
+            );
             usedChars = []; currentLayout = null; currentPuzzleRaw = "";
             document.getElementById('st-puz').innerText = "-";
             document.getElementById('st-cat').innerText = "-";
@@ -1777,22 +2207,36 @@
         function closePopup() { document.getElementById('mainModal').style.display = 'none'; }
 
         async function changeBorderColor(color) {
-            const { data: row } = await db.from('wheel_game').select('border_color').eq('room_id', currentRoomId).maybeSingle();
-            let currentBanner = '';
-            if (row && row.border_color && row.border_color.includes('|BANNER:')) {
-                currentBanner = row.border_color.split('|BANNER:')[1] || '';
-            }
-            let newBorderColor = currentBanner ? `${color}|BANNER:${currentBanner}` : color;
-            await db.from('wheel_game').update({ border_color: newBorderColor }).eq('room_id', currentRoomId);
+            await updateBorderColorComponents({ color });
         }
 
         async function setRoundBanner(text) {
-            const { data: row } = await db.from('wheel_game').select('border_color').eq('room_id', currentRoomId).maybeSingle();
-            let currentColor = (row && row.border_color) ? row.border_color : 'rgb(128,0,128)';
-            let colorOnly = currentColor.split('|BANNER:')[0];
+            await updateBorderColorComponents({ banner: text || '' });
+        }
 
-            let newBorderColor = text ? `${colorOnly}|BANNER:${text}` : `${colorOnly}|BANNER:`;
-            await db.from('wheel_game').update({ border_color: newBorderColor }).eq('room_id', currentRoomId);
+        async function setBoardTimerPosition() {
+            if (!currentRoomId) {
+                showPopup("Thông báo", "Vui lòng chọn hoặc tạo phòng trước!");
+                return;
+            }
+            const selectEl = document.getElementById('select-board-timer-pos');
+            const pos = parseInt(selectEl ? selectEl.value : '0', 10);
+            if (isNaN(pos) || pos < 1 || pos > 64) {
+                showPopup("Thông báo", "Vui lòng chọn ô từ 1 đến 64!");
+                return;
+            }
+
+            await updateBorderColorComponents({ timerPos: String(pos) });
+            console.log(`Đã đặt đồng hồ lên ô ${pos} trên Puzzleboard`);
+        }
+
+        async function hideBoardTimer() {
+            if (!currentRoomId) {
+                showPopup("Thông báo", "Vui lòng chọn hoặc tạo phòng trước!");
+                return;
+            }
+            await updateBorderColorComponents({ timerPos: '0' });
+            console.log("Đã ẩn đồng hồ trên Puzzleboard");
         }
 
         async function openBuzzer() {
@@ -1800,7 +2244,7 @@
                 is_buzzer_locked: false,
                 buzzer_player: ""
             }).eq('room_id', currentRoomId);
-            await changeBorderColor('rgb(128,0,128)');
+            await updateBorderColorComponents({ color: 'rgb(128,0,128)', allowedBuzzer: 'all' });
         }
 
         async function lockBuzzer() {
@@ -1817,10 +2261,11 @@
 
             const currentLockStatus = currentGame ? currentGame.is_buzzer_locked : false;
 
+            await updateBorderColorComponents({ color: 'rgb(128,0,128)' });
+
             const { error } = await db.from('wheel_game').update({
                 buzzer_player: "",
-                is_buzzer_locked: currentLockStatus,
-                border_color: 'rgb(128,0,128)'
+                is_buzzer_locked: currentLockStatus
             }).eq('room_id', currentRoomId);
 
             if (error) {
