@@ -1759,7 +1759,8 @@
                 showPopup("Thông báo", "Vui lòng chọn hoặc tạo phòng trước!");
                 return;
             }
-            quickStop();
+            if (quickInterval) clearInterval(quickInterval);
+            stopCountdown();
 
             const selectEl = document.getElementById('select-db5-player');
             if (selectEl) {
@@ -1781,7 +1782,7 @@
                     board_layout: "[]",
                     is_full_reveal: false,
                     decoding_positions: "",
-                    is_buzzer_locked: false,
+                    is_buzzer_locked: true,
                     buzzer_player: ""
                 }
             );
@@ -1791,7 +1792,7 @@
             document.getElementById('st-puz').innerText = "-";
             document.getElementById('st-cat').innerText = "-";
             renderKeyboard();
-            console.log("Đã reset bảng trống đặc biệt với viền màu trắng");
+            console.log("Đã reset bảng trống đặc biệt với viền màu trắng (giữ nguyên thời gian, khóa chuông)");
         }
 
         function startRandomLetterReveal() {
