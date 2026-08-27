@@ -1677,7 +1677,15 @@
                 marked = marked.filter(p => p !== pos);
             });
 
-            countdownValue = 45;
+            // Đồng bộ lại thời gian từ DB nếu biến đếm hiện tại không hợp lệ
+            if (countdownValue <= 0) {
+                const { data: gameRow } = await db.from('wheel_game').select('timer').eq('room_id', currentRoomId).maybeSingle();
+                if (gameRow && gameRow.timer > 0) {
+                    countdownValue = gameRow.timer;
+                } else {
+                    countdownValue = 45;
+                }
+            }
             document.getElementById('st-timer').innerText = countdownValue;
             lastBuzzerState = null;
 
@@ -1693,7 +1701,7 @@
                     revealed_chars: usedChars.join(','),
                     is_buzzer_locked: false,
                     buzzer_player: "",
-                    timer: 45
+                    timer: countdownValue
                 }
             );
 
