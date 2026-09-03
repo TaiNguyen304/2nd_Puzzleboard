@@ -69,8 +69,9 @@
         .cell.timer-cell {
             width: 72px !important;
             height: 100px !important;
+            flex-shrink: 0 !important;
             box-sizing: border-box !important;
-            background-color: #ffffff !important;
+            background-color: #ffa500 !important;
             background-image: none !important;
             color: #000000 !important;
             font-family: 'Myriad Pro Semibold', 'Myriad Pro', sans-serif !important;
@@ -81,6 +82,7 @@
             align-items: center !important;
             border-radius: 0px !important;
             border: none !important;
+            outline: none !important;
             box-shadow: none !important;
             margin: 0 !important;
             padding: 0 !important;
@@ -99,7 +101,8 @@
         #board {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 3px;
+            row-gap: 3px;
             background: var(--deep-bg);
             padding: 30px;
             box-shadow: 0 0 60px rgb(128, 0, 128);
@@ -123,7 +126,8 @@
         .row {
             display: flex;
             justify-content: center;
-            gap: 6px;
+            gap: 3px;
+            column-gap: 3px;
             width: fit-content;
             margin: 0 auto;
             user-select: none;
@@ -136,14 +140,24 @@
             font-style: normal;
         }
 
+        .cell, .banner-cell {
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
         .cell {
             width: 72px;
             height: 100px;
             font-size: 64px;
             box-sizing: border-box;
-            border: none;
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
             border-radius: 0px;
-            gap: 2px;
+            margin: 0;
+            padding: 0;
+            flex-shrink: 0;
             background-color: #61a252;
             background-image: none;
 
@@ -158,16 +172,18 @@
         .cell.active {
             background-image: none;
             background-color: white;
-            box-shadow: none;
-            border: none;
+            box-shadow: none !important;
+            border: none !important;
+            outline: none !important;
             border-radius: 0px;
         }
 
         .cell.revealed {
             background-image: none;
             background-color: white;
-            box-shadow: none;
-            border: none;
+            box-shadow: none !important;
+            border: none !important;
+            outline: none !important;
             border-radius: 0px;
             color: #000;
             font-weight: bold;
@@ -177,8 +193,9 @@
         .cell.marked {
             background-image: none;
             background-color: blue;
-            box-shadow: none;
-            border: none;
+            box-shadow: none !important;
+            border: none !important;
+            outline: none !important;
             border-radius: 0px;
             color: transparent;
         }
@@ -186,15 +203,18 @@
         .cell.decoding {
             background-image: none;
             background-color: #ffff00;
-            box-shadow: none;
-            border: none;
+            box-shadow: none !important;
+            border: none !important;
+            outline: none !important;
+            border-radius: 0px;
             color: transparent;
         }
 
         .banner-row {
             display: flex;
             justify-content: center;
-            gap: 6px;
+            gap: 3px;
+            column-gap: 3px;
             width: fit-content;
             margin: 0 auto;
             user-select: none;
@@ -207,23 +227,34 @@
             font-family: 'Myriad Pro Semibold', 'Myriad Pro', sans-serif, Arial;
             font-weight: bold;
             box-sizing: border-box;
+            flex-shrink: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             user-select: none;
             border-radius: 0px;
-            border: none;
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+            margin: 0;
+            padding: 0;
         }
 
         .banner-cell.empty {
             background-color: #94dceb !important;
             background-image: none !important;
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
             color: transparent;
         }
 
         .banner-cell.filled {
             background-color: #ffffff !important;
             background-image: none !important;
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
             color: #000000 !important;
         }
 
@@ -402,6 +433,9 @@
                 const target = document.getElementById(`cell-${r}-${c}`);
                 if (target) {
                     target.className = 'cell timer-cell';
+                    target.style.backgroundImage = 'none';
+                    target.style.backgroundColor = '#ffa500';
+                    target.style.color = '#000000';
                     target.innerText = seconds;
                 }
             }
@@ -609,6 +643,9 @@
                 const timerTarget = document.getElementById(`cell-${timerR}-${timerC}`);
                 if (timerTarget) {
                     timerTarget.className = 'cell timer-cell';
+                    timerTarget.style.backgroundImage = 'none';
+                    timerTarget.style.backgroundColor = '#ffa500';
+                    timerTarget.style.color = '#000000';
                     timerTarget.innerText = currentSeconds;
                 }
             }
