@@ -3,93 +3,280 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Scoreboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scoreboard - Chiếc Nón Kỳ Diệu</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
+        @font-face {
+            font-family: 'NVA-SF Fortune Wheel';
+            src: url('NVA-SF%20Fortune%20Wheel.ttf') format('truetype'),
+                 url('./NVA-SF Fortune Wheel.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'UTM HelvetIns';
+            src: url('UTM%20HELVETINS_3.TTF') format('truetype'),
+                 url('./UTM HELVETINS_3.TTF') format('truetype');
+            font-weight: bold;
+        }
+
+        @font-face {
+            font-family: 'Helvetica-Bold';
+            src: url('Helvetica-Bold.ttf') format('truetype'),
+                 url('./Helvetica-Bold.ttf') format('truetype');
+            font-weight: bold;
+        }
+
         * {
-            font-weight: bold !important;
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-        }
-
-        body {
-            background-color: #800080;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            align-items: stretch;
-            height: 100vh;
-            font-family: 'Segoe UI', sans-serif;
-            overflow: hidden;
-        }
-
-        #score-container {
-            display: flex;
-            justify-content: space-around;
-            align-items: stretch;
-            gap: 0;
-            height: 32vh;
-            width: 100%;
-        }
-
-        .score-box {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 5rem;
-            border: none;
-            transition: all 0.3s ease;
             user-select: none;
         }
 
-        .score-box.red {
-            background-color: #ff0000;
-            color: #fff;
-        }
-
-        .score-box.yellow {
-            background-color: #ffff00;
-            color: #000;
-        }
-
-        .score-box.blue {
-            background-color: #0000ff;
-            color: #fff;
-        }
-
-        audio {
-            display: none;
-        }
-
-        #no-roomid-msg {
-            position: fixed;
-            top: 0;
-            left: 0;
+        html, body {
             width: 100vw;
             height: 100vh;
-            background-color: #000000;
-            color: #ff0000;
-            font-size: 2rem;
-            font-weight: bold;
+            overflow: hidden;
+            background: transparent !important;
+            background-color: transparent !important;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Container cố định tỷ lệ chuẩn 16:9 nhưng co giãn toàn màn hình */
+        #main-stage {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            background: transparent !important;
+        }
+
+        /* KHU VỰC PHẦN TRÊN: NỀN MÀU ĐỤC LỖ 3 Ô CAMERA */
+        #top-backdrop-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 68vh;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* KHANH PHÂN CÁCH KIM LOẠI 3D (METALLIC DIVIDER RAIL) */
+        #metallic-bar {
+            position: relative;
+            width: 100%;
+            height: 2.2vh;
+            min-height: 16px;
+            z-index: 5;
+            background: linear-gradient(180deg, 
+                #ffffff 0%, 
+                #eaeaea 12%, 
+                #c2c2c2 35%, 
+                #828282 65%, 
+                #4e4e4e 90%, 
+                #2b2b2b 100%
+            );
+            border-top: 1px solid rgba(255, 255, 255, 0.9);
+            border-bottom: 2px solid rgba(0, 0, 0, 0.85);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
+        }
+
+        /* KHU VỰC 3 BỤC ĐIỂM (PODIUMS) PHÍA DƯỚI */
+        #score-container {
+            position: relative;
+            display: flex;
+            width: 100%;
+            height: 29.8vh;
+            z-index: 4;
+        }
+
+        .podium {
+            flex: 1;
+            position: relative;
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 999999;
+            overflow: hidden;
+            border-right: 2px solid rgba(0, 0, 0, 0.4);
+            border-left: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .podium:first-child {
+            border-left: none;
+        }
+
+        .podium:last-child {
+            border-right: none;
+        }
+
+        /* BỤC ĐỎ (NGƯỜI CHƠI 1) */
+        .podium.red {
+            background: radial-gradient(circle at 50% 30%, #c41829 0%, #a00f1e 45%, #730611 100%);
+            box-shadow: inset 0 6px 20px rgba(255, 100, 100, 0.25), inset 0 -6px 25px rgba(0, 0, 0, 0.7);
+        }
+
+        /* BỤC VÀNG (NGƯỜI CHƠI 2) */
+        .podium.yellow {
+            background: radial-gradient(circle at 50% 30%, #cca414 0%, #ad8608 45%, #7a5d02 100%);
+            box-shadow: inset 0 6px 20px rgba(255, 235, 120, 0.25), inset 0 -6px 25px rgba(0, 0, 0, 0.7);
+        }
+
+        /* BỤC XANH DƯƠNG (NGƯỜI CHƠI 3) */
+        .podium.blue {
+            background: radial-gradient(circle at 50% 30%, #1793cb 0%, #1076a5 45%, #084c6c 100%);
+            box-shadow: inset 0 6px 20px rgba(120, 220, 255, 0.25), inset 0 -6px 25px rgba(0, 0, 0, 0.7);
+        }
+
+        /* HỌA TIẾT VẢI/HẠT KIM TUYẾN TRÊN MẶT BỤC */
+        .podium-texture {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 0),
+                radial-gradient(rgba(0, 0, 0, 0.15) 1px, transparent 0);
+            background-size: 4px 4px, 6px 6px;
+            background-position: 0 0, 2px 2px;
+            pointer-events: none;
+            opacity: 0.65;
+        }
+
+        /* CHỮ CHÌM CHIẾC NÓN KỲ DIỆU */
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'NVA-SF Fortune Wheel', 'UTM HelvetIns', sans-serif;
+            font-size: clamp(1.8rem, 3.2vw, 3.4rem);
+            color: #ffffff;
+            opacity: 0.18;
             text-align: center;
-            padding: 20px;
+            line-height: 1.15;
+            letter-spacing: 2px;
+            white-space: nowrap;
+            pointer-events: none;
+            text-transform: uppercase;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+            z-index: 1;
+        }
+
+        /* CHỮ SỐ ĐIỂM SỐ CHÍNH (REAL-TIME SCORE) */
+        .score-value {
+            position: relative;
+            z-index: 2;
+            font-family: 'UTM HelvetIns', 'Helvetica-Bold', 'Segoe UI', sans-serif;
+            font-weight: bold;
+            font-size: clamp(3.2rem, 5.8vw, 6.2rem);
+            color: #ffffff;
+            text-shadow: 
+                0 2px 4px rgba(0, 0, 0, 0.9),
+                0 4px 15px rgba(0, 0, 0, 0.8),
+                0 0 25px rgba(0, 0, 0, 0.6);
+            letter-spacing: 2px;
+            transition: transform 0.15s ease, opacity 0.2s ease;
+        }
+
+        /* THÔNG BÁO ROOMID NHẸ NHÀNG KHI CHƯA TRUYỀN THAM SỐ */
+        #roomid-banner {
+            position: fixed;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.85);
+            border: 2px solid #ff0055;
+            color: #ffffff;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            z-index: 999999;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+            display: none;
+            text-align: center;
+            pointer-events: auto;
+        }
+
+        #roomid-banner code {
+            color: #39ff14;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
         }
     </style>
 </head>
 
 <body>
-    <div id="score-container">
-        <div class="score-box red" id="score-red">0</div>
-        <div class="score-box yellow" id="score-yellow">0</div>
-        <div class="score-box blue" id="score-blue">0</div>
+    <div id="roomid-banner">
+        ⚠️ Vui lòng thêm tham số phòng trên URL: <code>?roomid=MÃ_PHÒNG</code> để đồng bộ điểm số từ Controller!
     </div>
 
+    <div id="main-stage">
+        <!-- SVG NỀN MÀU + ĐỤC LỖ 3 CAMERA (HOÀN TOÀN TRONG SUỐT CHO OBS) -->
+        <svg id="top-backdrop-svg" viewBox="0 0 1920 734" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <!-- GRADIENT NỀN MÀU XANH NAVY TRƠN THANH LỊCH -->
+                <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="#020822" />
+                    <stop offset="40%" stop-color="#04123b" />
+                    <stop offset="100%" stop-color="#082260" />
+                </linearGradient>
+
+                <!-- MASK ĐỤC LỖ 3 CAMERA: VÙNG TRẮNG = HIỆN NỀN MÀU, VÙNG ĐEN = HOÀN TOÀN TRONG SUỐT -->
+                <mask id="cameraCutoutMask">
+                    <!-- Nền trắng toàn bộ vùng trên -->
+                    <rect x="0" y="0" width="1920" height="734" fill="#ffffff" />
+                    <!-- Ô Cam 1 (Người chơi 1 - Đỏ): X=40, Y=240, Rộng=560, Cao=380 -->
+                    <rect x="40" y="240" width="560" height="380" fill="#000000" rx="4" />
+                    <!-- Ô Cam 2 (Người chơi 2 - Vàng): X=680, Y=240, Rộng=560, Cao=380 -->
+                    <rect x="680" y="240" width="560" height="380" fill="#000000" rx="4" />
+                    <!-- Ô Cam 3 (Người chơi 3 - Xanh): X=1320, Y=240, Rộng=560, Cao=380 -->
+                    <rect x="1320" y="240" width="560" height="380" fill="#000000" rx="4" />
+                </mask>
+            </defs>
+
+            <!-- NỀN MÀU TRƠN ĐƯỢC ÁP DỤNG MASK ĐỤC LỖ CHO 3 CAMERA -->
+            <rect x="0" y="0" width="1920" height="734" fill="url(#skyGrad)" mask="url(#cameraCutoutMask)" />
+        </svg>
+
+        <!-- THANH PHÂN CÁCH KIM LOẠI 3D SÁNG BÓNG -->
+        <div id="metallic-bar"></div>
+
+        <!-- 3 BỤC ĐIỂM NGƯỜI CHƠI -->
+        <div id="score-container">
+            <!-- BỤC ĐỎ (PLAYER 1) -->
+            <div class="podium red" id="podium-red">
+                <div class="podium-texture"></div>
+                <div class="watermark">CHIẾC NÓN<br>KỲ DIỆU</div>
+                <div class="score-value" id="score-red">0</div>
+            </div>
+
+            <!-- BỤC VÀNG (PLAYER 2) -->
+            <div class="podium yellow" id="podium-yellow">
+                <div class="podium-texture"></div>
+                <div class="watermark">CHIẾC NÓN<br>KỲ DIỆU</div>
+                <div class="score-value" id="score-yellow">0</div>
+            </div>
+
+            <!-- BỤC XANH DƯƠNG (PLAYER 3) -->
+            <div class="podium blue" id="podium-blue">
+                <div class="podium-texture"></div>
+                <div class="watermark">CHIẾC NÓN<br>KỲ DIỆU</div>
+                <div class="score-value" id="score-blue">0</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- KẾT NỐI REAL-TIME SUPABASE -->
     <script>
         var SUPABASE_URL = 'https://tfdgtdderkaergijhucb.supabase.co';
         var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmZGd0ZGRlcmthZXJnaWpodWNiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg0NjM5MzksImV4cCI6MjA5NDAzOTkzOX0._BOLe4xH5ZuhfXfsdS63eY9N12wyomq58GG0toi1aIE';
@@ -98,51 +285,70 @@
         const urlParams = new URLSearchParams(window.location.search);
         const roomId = urlParams.get('roomid');
 
-        if (!roomId) {
-            document.body.innerHTML = '<div id="no-roomid-msg">Vui lòng nhập tham số ?roomid trên URL.</div>';
-            if (typeof init === 'function') init = function () { }; // Chặn hàm init chạy
-            window.onload = null;
-            throw new Error("Thiếu tham số roomid trên URL");
-        }
-
         function getRoomFilterValue(value = roomId) {
             const normalized = value == null ? "" : String(value).trim();
             return /^\d+$/.test(normalized) ? Number(normalized) : normalized;
         }
-        
+
         function formatScore(num) {
             return (num || 0).toLocaleString('vi-VN');
         }
 
+        function updateScores(data) {
+            if (!data) return;
+            const mode = data.score_display_mode || 'round';
+
+            const redEl = document.getElementById('score-red');
+            const yellowEl = document.getElementById('score-yellow');
+            const blueEl = document.getElementById('score-blue');
+
+            if (redEl) redEl.innerText = formatScore(data[`score_red_${mode}`]);
+            if (yellowEl) yellowEl.innerText = formatScore(data[`score_yellow_${mode}`]);
+            if (blueEl) blueEl.innerText = formatScore(data[`score_blue_${mode}`]);
+        }
+
         async function init() {
-            const updateScores = (data) => {
-                const mode = data.score_display_mode || 'round';
-
-                const redEl = document.getElementById('score-red');
-                const yellowEl = document.getElementById('score-yellow');
-                const blueEl = document.getElementById('score-blue');
-
-                if (redEl) redEl.innerText = formatScore(data[`score_red_${mode}`]);
-                if (yellowEl) yellowEl.innerText = formatScore(data[`score_yellow_${mode}`]);
-                if (blueEl) blueEl.innerText = formatScore(data[`score_blue_${mode}`]);
-            };
-
-            // Get initial data
-            const { data } = await db.from('wheel_game').select('*').eq('room_id', getRoomFilterValue()).maybeSingle();
-            if (data) {
-                updateScores(data);
+            if (!roomId) {
+                const banner = document.getElementById('roomid-banner');
+                if (banner) banner.style.display = 'block';
+                return;
             }
 
-            // Listen for real-time updates from Supabase
-            db.channel('scoreboard').on('postgres_changes', {
-                event: 'UPDATE',
-                schema: 'public',
-                table: 'wheel_game',
-                filter: `room_id=eq.${encodeURIComponent(String(roomId))}`
-            }, payload => {
-                const newData = payload.new;
-                updateScores(newData);
-            }).subscribe();
+            try {
+                // 1. Tải điểm khởi đầu
+                let { data, error } = await db.from('wheel_game')
+                    .select('*')
+                    .eq('room_id', roomId)
+                    .maybeSingle();
+
+                if ((!data || error) && !isNaN(roomId)) {
+                    const numQuery = await db.from('wheel_game')
+                        .select('*')
+                        .eq('room_id', Number(roomId))
+                        .maybeSingle();
+                    if (!numQuery.error && numQuery.data) {
+                        data = numQuery.data;
+                    }
+                }
+
+                if (data) {
+                    updateScores(data);
+                }
+
+                // 2. Lắng nghe cập nhật điểm Realtime từ Controller
+                db.channel('scoreboard_' + roomId).on('postgres_changes', {
+                    event: 'UPDATE',
+                    schema: 'public',
+                    table: 'wheel_game',
+                    filter: `room_id=eq.${encodeURIComponent(String(roomId))}`
+                }, payload => {
+                    const newData = payload.new;
+                    updateScores(newData);
+                }).subscribe();
+
+            } catch (err) {
+                console.error("Lỗi kết nối Scoreboard Realtime:", err);
+            }
         }
 
         init();
