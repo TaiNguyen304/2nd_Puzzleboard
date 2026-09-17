@@ -18,6 +18,12 @@
             box-sizing: border-box;
         }
 
+        html {
+            overflow-x: auto;
+            overflow-y: auto;
+            background-color: #120A21;
+        }
+
         body {
             font-family: 'Segoe UI', sans-serif;
             background-color: #120A21;
@@ -25,10 +31,32 @@
             margin: 0;
             padding: 20px;
             display: grid;
-            grid-template-columns: 1fr 380px;
+            grid-template-columns: minmax(min-content, 1fr) 380px;
             gap: 20px;
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh;
+            min-width: fit-content;
+            overflow-x: auto;
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0d0718;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #44286a;
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--pink);
         }
 
         /* --- CỘT TRÁI: TRẠNG THÁI & PUZZLEBOARD --- */
@@ -36,7 +64,8 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
-            justify-content: center;
+            justify-content: flex-start;
+            min-width: fit-content;
         }
 
         .status-container {

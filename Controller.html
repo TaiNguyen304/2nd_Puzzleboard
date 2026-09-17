@@ -291,30 +291,34 @@
         }
 
         .room-info-box {
-            border: 2px dashed #ff00cc;
+            border: 1px solid #ff00cc;
             background-color: #0b0b0b;
-            padding: 15px;
+            padding: 8px 10px;
             border-radius: 6px;
             display: none;
+            margin-top: 10px;
         }
 
-        .status-text {
-            color: #ff00cc;
+        .room-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 6px;
+            margin-bottom: 6px;
+            border-bottom: 1px dashed #333;
+        }
+
+        .status-badge {
+            color: #39ff14;
+            font-size: 0.75rem;
             font-weight: bold;
-            font-size: 1.05rem;
             text-transform: uppercase;
-            margin-bottom: 10px;
         }
 
-        .info-line {
-            font-size: 0.95rem;
+        .room-id-badge {
+            color: #fff;
+            font-size: 0.85rem;
             font-weight: bold;
-            margin-top: 6px;
-            text-transform: uppercase;
-        }
-
-        .label-green {
-            color: #00ff00;
         }
 
         .val-yellow {
@@ -323,6 +327,108 @@
 
         .val-white {
             color: #ffffff;
+        }
+
+        .room-compact-rows {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .room-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #161616;
+            border: 1px solid #2a2a2a;
+            border-radius: 4px;
+            padding: 4px 8px;
+            min-height: 32px;
+        }
+
+        .room-row.row-p1 {
+            border-left: 3px solid #ff3333;
+        }
+
+        .room-row.row-p2 {
+            border-left: 3px solid #ffff00;
+        }
+
+        .room-row.row-p3 {
+            border-left: 3px solid #0088ff;
+        }
+
+        .room-row-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.78rem;
+            white-space: nowrap;
+        }
+
+        .label-pink {
+            color: #ff00cc;
+            font-weight: bold;
+        }
+
+        .tag-p1 { color: #ff5555; font-weight: bold; }
+        .tag-p2 { color: #ffff33; font-weight: bold; }
+        .tag-p3 { color: #33aaff; font-weight: bold; }
+
+        .pass-tag {
+            color: #aaa;
+            font-size: 0.72rem;
+            background: #000;
+            padding: 2px 5px;
+            border-radius: 3px;
+            border: 1px solid #333;
+        }
+
+        .pass-tag b {
+            color: #ffff00;
+        }
+
+        .room-row-actions {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .btn-row-open {
+            background: #39ff14;
+            color: #000 !important;
+            font-size: 0.7rem;
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 3px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+
+        .btn-row-open:hover {
+            background: #ffa500;
+            color: #000000 !important;
+            font-weight: bold !important;
+        }
+
+        .btn-row-copy {
+            background: #252525;
+            color: #eee;
+            font-size: 0.7rem;
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 3px;
+            border: 1px solid #444;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .btn-row-copy:hover {
+            background: #383838;
+            color: #39ff14;
         }
 
         #lockOverlay {
@@ -371,26 +477,69 @@
             <button class="btn-create-room" onclick="generateRoomAndPasswords()">TẠO PHÒNG</button>
 
             <div id="room-info-display" class="room-info-box">
-                <div class="status-text">ĐÃ TẠO PHÒNG THÀNH CÔNG!</div>
-
-                <div class="info-line">
-                    <span class="label-green">MÃ PHÒNG:</span>
-                    <span id="room-id-val" class="val-yellow"></span>
+                <div class="room-header-row">
+                    <span class="status-badge">✓ ĐÃ TẠO PHÒNG</span>
+                    <span class="room-id-badge">MÃ PHÒNG: <b id="room-id-val" class="val-yellow">------</b></span>
                 </div>
 
-                <div class="info-line">
-                    <span class="label-green">PLAYER 1 MẬT KHẨU:</span>
-                    <span id="p1-pass-val" class="val-white"></span>
-                </div>
+                <div class="room-compact-rows">
+                    <!-- Hàng 1: HOST -->
+                    <div class="room-row">
+                        <div class="room-row-label">
+                            <span class="label-pink">🎤 HOST</span>
+                        </div>
+                        <div class="room-row-actions">
+                            <a id="host-link-btn" href="#" target="_blank" class="btn-row-open">MỞ ↗</a>
+                            <button class="btn-row-copy" onclick="copyLinkById('host-link-btn', this)">CHÉP LINK</button>
+                        </div>
+                    </div>
 
-                <div class="info-line">
-                    <span class="label-green">PLAYER 2 MẬT KHẨU:</span>
-                    <span id="p2-pass-val" class="val-white"></span>
-                </div>
+                    <!-- Hàng 2: PUZZLEBOARD -->
+                    <div class="room-row">
+                        <div class="room-row-label">
+                            <span class="label-pink">📺 PUZZLEBOARD</span>
+                        </div>
+                        <div class="room-row-actions">
+                            <a id="board-link-btn" href="#" target="_blank" class="btn-row-open">MỞ ↗</a>
+                            <button class="btn-row-copy" onclick="copyLinkById('board-link-btn', this)">CHÉP LINK</button>
+                        </div>
+                    </div>
 
-                <div class="info-line">
-                    <span class="label-green">PLAYER 3 MẬT KHẨU:</span>
-                    <span id="p3-pass-val" class="val-white"></span>
+                    <!-- Hàng 3: PLAYER 1 -->
+                    <div class="room-row row-p1">
+                        <div class="room-row-label">
+                            <span class="tag-p1">🔴 P1 (ĐỎ)</span>
+                            <span class="pass-tag">MK: <b id="p1-pass-val">----</b></span>
+                        </div>
+                        <div class="room-row-actions">
+                            <a id="p1-link-btn" href="#" target="_blank" class="btn-row-open">MỞ ↗</a>
+                            <button class="btn-row-copy" onclick="copyLinkById('p1-link-btn', this)">CHÉP LINK</button>
+                        </div>
+                    </div>
+
+                    <!-- Hàng 4: PLAYER 2 -->
+                    <div class="room-row row-p2">
+                        <div class="room-row-label">
+                            <span class="tag-p2">🟡 P2 (VÀNG)</span>
+                            <span class="pass-tag">MK: <b id="p2-pass-val">----</b></span>
+                        </div>
+                        <div class="room-row-actions">
+                            <a id="p2-link-btn" href="#" target="_blank" class="btn-row-open">MỞ ↗</a>
+                            <button class="btn-row-copy" onclick="copyLinkById('p2-link-btn', this)">CHÉP LINK</button>
+                        </div>
+                    </div>
+
+                    <!-- Hàng 5: PLAYER 3 -->
+                    <div class="room-row row-p3">
+                        <div class="room-row-label">
+                            <span class="tag-p3">🔵 P3 (XANH)</span>
+                            <span class="pass-tag">MK: <b id="p3-pass-val">----</b></span>
+                        </div>
+                        <div class="room-row-actions">
+                            <a id="p3-link-btn" href="#" target="_blank" class="btn-row-open">MỞ ↗</a>
+                            <button class="btn-row-copy" onclick="copyLinkById('p3-link-btn', this)">CHÉP LINK</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -486,15 +635,11 @@
             </div>
 
             <div id="quick-panel" style="display:none; margin-top:15px; border: 1px dashed #666; padding: 10px;">
-                <p style="color:var(--neon); margin:0 0 10px 0; font-size:0.8rem;">ĐIỀU KHIỂN ĐOÁN NHANH:</p>
+                <p style="color:var(--neon); margin:0 0 10px 0; font-size:0.8rem; font-weight:bold;">ĐIỀU KHIỂN ĐOÁN NHANH / ĐNLH (KHÔNG GIỚI HẠN THỜI GIAN):</p>
                 <div class="quick-controls">
                     <button class="btn-quick" onclick="quickStart()">Bắt đầu hiện chữ</button>
                     <button class="btn-quick" onclick="quickStop()">Dừng hiện chữ</button>
                     <button class="btn-quick" onclick="quickResume()">Tiếp tục hiện chữ</button>
-                </div>
-                <div class="quick-controls" style="margin-top: 5px;">
-                    <button style="background: red; color: white; flex: 1; font-size: 0.75rem; padding: 8px 2px;"
-                        onclick="resetCountdown()">Reset Đồng Hồ (45s)</button>
                 </div>
             </div>
 
@@ -994,6 +1139,18 @@
 
         window.onload = async () => {
             renderKeyboard();
+            const urlParams = new URLSearchParams(window.location.search);
+            const rId = urlParams.get('roomid');
+            if (rId) {
+                currentRoomId = rId;
+                document.getElementById('lockOverlay').style.display = 'none';
+                await loadCurrentState();
+                setupRealtime();
+                const { data } = await db.from('wheel_game').select('*').eq('room_id', currentRoomId).maybeSingle();
+                if (data) {
+                    populateRoomInfo(data.room_id, data.pass_player1, data.pass_player2, data.pass_player3);
+                }
+            }
         };
 
         function setupRealtime() {
@@ -1359,7 +1516,7 @@
             }
 
             const isDB5 = /ĐB\s*5\.[1-5]/i.test(roundName) || /ĐB5\.[1-5]/i.test(roundName);
-            const isQuick = (["Đoán Nhanh", "ĐNLH"].some(t => roundName.includes(t)) || roundName.toLowerCase().includes('đoán nhanh')) && !isDB5;
+            const isQuick = (["Đoán Nhanh", "ĐNLH"].some(t => roundName.includes(t)) || roundName.toLowerCase().includes('đoán nhanh') || roundName.toLowerCase().includes('đnlh')) && !isDB5;
             const rnLower = roundName.toLowerCase();
             const isSpecialRound = (rnLower.includes('vòng đặc biệt') || rnLower.includes('vòng phụ') || roundName.includes('ĐB')) && !isDB5;
             const isSpecialRoundOnly = rnLower.includes('vòng đặc biệt') || rnLower.includes('vòng phụ');
@@ -1367,7 +1524,7 @@
             document.getElementById('quick-panel').style.display = isQuick ? 'block' : 'none';
             document.getElementById('btn-ngiah').style.display = isSpecialRound ? 'block' : 'none';
             document.getElementById('special-guess-panel').style.display = isSpecialRound ? 'block' : 'none';
-            document.getElementById('special-round-timer-panel').style.display = (isSpecialRoundOnly || isDB5) ? 'block' : 'none';
+            document.getElementById('special-round-timer-panel').style.display = isSpecialRoundOnly ? 'block' : 'none';
             const db5Panel = document.getElementById('db5-panel');
             if (db5Panel) db5Panel.style.display = isDB5 ? 'block' : 'none';
 
@@ -1879,23 +2036,13 @@
 
         function quickStop() {
             if (quickInterval) clearInterval(quickInterval);
-            stopCountdown();
         }
 
         async function quickResume() {
             if (!currentRoomId) return;
             if (quickInterval) clearInterval(quickInterval);
-            if (countdownInterval) clearInterval(countdownInterval);
 
             lastBuzzerState = null;
-
-            if (countdownValue <= 0) {
-                const { data: gameRow } = await db.from('wheel_game').select('timer').eq('room_id', currentRoomId).maybeSingle();
-                if (gameRow && gameRow.timer > 0) {
-                    countdownValue = gameRow.timer;
-                }
-            }
-            document.getElementById('st-timer').innerText = countdownValue;
 
             await updateBorderColorComponents(
                 {
@@ -1908,7 +2055,6 @@
                 }
             );
 
-            startCountdown();
             startRandomLetterReveal();
         }
 
@@ -2458,6 +2604,87 @@
             }).eq('room_id', currentRoomId);
         }
 
+        function populateRoomInfo(roomId, passP1, passP2, passP3) {
+            const rVal = document.getElementById('room-id-val');
+            if (rVal) rVal.innerText = roomId || '';
+            const p1Val = document.getElementById('p1-pass-val');
+            if (p1Val) p1Val.innerText = passP1 || '';
+            const p2Val = document.getElementById('p2-pass-val');
+            if (p2Val) p2Val.innerText = passP2 || '';
+            const p3Val = document.getElementById('p3-pass-val');
+            if (p3Val) p3Val.innerText = passP3 || '';
+
+            const currentUrl = window.location.href.split('?')[0].split('#')[0];
+            const baseUrl = currentUrl.substring(0, currentUrl.lastIndexOf('/') + 1);
+
+            const hostUrl = `${baseUrl}Host.html?roomid=${encodeURIComponent(roomId)}`;
+            const boardUrl = `${baseUrl}Puzzleboard.html?roomid=${encodeURIComponent(roomId)}`;
+            const scoreUrl = `${baseUrl}Scoreboard.html?roomid=${encodeURIComponent(roomId)}`;
+            const p1Url = `${baseUrl}Player1.html?roomid=${encodeURIComponent(roomId)}&auth=${encodeURIComponent(passP1)}`;
+            const p2Url = `${baseUrl}Player2.html?roomid=${encodeURIComponent(roomId)}&auth=${encodeURIComponent(passP2)}`;
+            const p3Url = `${baseUrl}Player3.html?roomid=${encodeURIComponent(roomId)}&auth=${encodeURIComponent(passP3)}`;
+
+            const setLink = (btnId, textId, url) => {
+                const btn = document.getElementById(btnId);
+                const txt = document.getElementById(textId);
+                if (btn) btn.href = url;
+                if (txt) txt.innerText = url;
+            };
+
+            setLink('host-link-btn', 'host-link-text', hostUrl);
+            setLink('board-link-btn', 'board-link-text', boardUrl);
+            setLink('score-link-btn', 'score-link-text', scoreUrl);
+            setLink('p1-link-btn', 'p1-link-text', p1Url);
+            setLink('p2-link-btn', 'p2-link-text', p2Url);
+            setLink('p3-link-btn', 'p3-link-text', p3Url);
+
+            const displayBox = document.getElementById('room-info-display');
+            if (displayBox) displayBox.style.display = 'block';
+        }
+
+        function copyLinkById(btnId, triggerBtn) {
+            const anchor = document.getElementById(btnId);
+            if (!anchor || !anchor.href) return;
+            const textToCopy = anchor.href;
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    markCopied(triggerBtn);
+                }).catch(() => {
+                    fallbackCopy(textToCopy, triggerBtn);
+                });
+            } else {
+                fallbackCopy(textToCopy, triggerBtn);
+            }
+        }
+
+        function fallbackCopy(text, btn) {
+            try {
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                ta.style.position = 'fixed';
+                ta.style.opacity = '0';
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                markCopied(btn);
+            } catch (e) {
+                console.error("Không thể copy:", e);
+            }
+        }
+
+        function markCopied(btn) {
+            if (!btn) return;
+            const originalText = btn.innerText;
+            btn.innerText = "ĐÃ CHÉP! ✓";
+            btn.style.color = "#39ff14";
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.style.color = "";
+            }, 2000);
+        }
+
         async function generateRoomAndPasswords() {
             const roomId = String(Math.floor(100000 + Math.random() * 900000));
             const passP1 = String(Math.floor(1000 + Math.random() * 9000));
@@ -2469,7 +2696,9 @@
                 room_id: roomId,
                 pass_player1: passP1,
                 pass_player2: passP2,
-                pass_player3: passP3
+                pass_player3: passP3,
+                is_buzzer_locked: true,
+                buzzer_player: ""
             }).select();
 
             if (error) {
@@ -2478,12 +2707,7 @@
                 return;
             }
 
-            document.getElementById('room-id-val').innerText = roomId;
-            document.getElementById('p1-pass-val').innerText = passP1;
-            document.getElementById('p2-pass-val').innerText = passP2;
-            document.getElementById('p3-pass-val').innerText = passP3;
-
-            document.getElementById('room-info-display').style.display = 'block';
+            populateRoomInfo(roomId, passP1, passP2, passP3);
             document.getElementById('lockOverlay').style.display = 'none';
 
             currentRoomId = roomId;
