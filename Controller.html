@@ -583,7 +583,8 @@
             <div class="grid-buttons">
                 <button style="background: aqua; color: black;" onclick="openBuzzer()">Mở chuông</button>
                 <button style="background: aqua; color: black;" onclick="lockBuzzer()">Khóa chuông</button>
-                <button style="background: aqua; color: black;" onclick="resetBuzzer()">Reset chuông</button>
+                <button style="background: aqua; color: black;" onclick="resetBuzzerAndOpen()">Reset và Mở</button>
+                <button style="background: aqua; color: black;" onclick="resetBuzzerAndLock()">Reset và Khóa</button>
             </div>
 
             <p style="color:var(--pink); margin: 15px 0 5px 0; font-size: 0.8rem;">ĐIỀU KHIỂN NHÃN VÒNG:</p>
@@ -803,7 +804,10 @@
                 </div>
             </div>
 
-            <button class="btn-reveal-all" onclick="revealAll()">HIỆN TOÀN BỘ Ô CHỮ (CÓ DẤU)</button>
+            <div style="display: flex; gap: 8px; margin-top: 10px;">
+                <button class="btn-reveal-all" style="flex: 1; margin-top: 0; background: #39ff14; border: 1px solid #39ff14;" onclick="revealAllCorrect()">HIỆN TOÀN BỘ (ĐÚNG)</button>
+                <button class="btn-reveal-all" style="flex: 1; margin-top: 0; background: aqua; border: 1px solid #00d9ff;" onclick="revealAllWrong()">HIỆN TOÀN BỘ (SAI)</button>
+            </div>
             <button onclick="revealDecodingCells()"
                 style="background-color: #ffff00; color: #000000; font-weight: bold !important; width: 100%; margin-top: 10px; border: 2px solid #000;">HIỆN
                 Ô GIẢI MÃ</button>
@@ -2184,7 +2188,15 @@
             }
         }
 
-        async function revealAll() {
+        async function revealAllCorrect() {
+            await revealAll(true);
+        }
+
+        async function revealAllWrong() {
+            await revealAll(false);
+        }
+
+        async function revealAll(isCorrect = false) {
             usedChars = [...VIETNAMESE_ALPHABET];
 
             const decodingPositions = extractDecodingPositions(currentLayout);
@@ -2194,12 +2206,18 @@
                 triggerSound(solveSound);
             }
 
-            await db.from('wheel_game').update({
+            const payload = {
                 revealed_chars: usedChars.join(','),
                 pending_positions: "",
                 is_full_reveal: true,
                 decoding_positions: decodingPositions.join(',')
-            }).eq('room_id', currentRoomId);
+            };
+
+            if (isCorrect) {
+                await updateBorderColorComponents({ color: 'rgb(0,255,0)' }, payload);
+            } else {
+                await db.from('wheel_game').update(payload).eq('room_id', currentRoomId);
+            }
 
             renderKeyboard();
         }
@@ -2408,24 +2426,32 @@
             }).eq('room_id', currentRoomId);
         }
 
-        async function resetBuzzer() {
-            const { data: currentGame } = await db.from('wheel_game')
-                .select('is_buzzer_locked')
-                .eq('room_id', currentRoomId)
-                .single();
-
-            const currentLockStatus = currentGame ? currentGame.is_buzzer_locked : false;
-
-            await updateBorderColorComponents({ color: 'rgb(128,0,128)' });
-
+        async function resetBuzzerAndOpen() {
+            await updateBorderColorComponents({ color: 'rgb(128,0,128)', allowedBuzzer: 'all' });
             const { error } = await db.from('wheel_game').update({
                 buzzer_player: "",
-                is_buzzer_locked: currentLockStatus
+                is_buzzer_locked: false
             }).eq('room_id', currentRoomId);
 
             if (error) {
-                console.error("Lỗi khi reset chuông:", error);
+                console.error("Lỗi khi reset và mở chuông:", error);
             }
+        }
+
+        async function resetBuzzerAndLock() {
+            await updateBorderColorComponents({ color: 'rgb(128,0,128)' });
+            const { error } = await db.from('wheel_game').update({
+                buzzer_player: "",
+                is_buzzer_locked: true
+            }).eq('room_id', currentRoomId);
+
+            if (error) {
+                console.error("Lỗi khi reset và khóa chuông:", error);
+            }
+        }
+
+        async function resetBuzzer() {
+            await resetBuzzerAndOpen();
         }
 
         function formatInput(input) {
