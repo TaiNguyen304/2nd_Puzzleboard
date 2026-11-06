@@ -3,15 +3,18 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Soundboard</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
-            --purple-bg: purple;
-            --purple-btn: green;
-            --purple-hover: orange;
-            --stop-btn: red;
-            --stop-hover: orange;
+            --purple-bg: #3d0043;
+            --card-bg: rgba(20, 0, 28, 0.75);
+            --purple-btn: #008000;
+            --purple-hover: #ffa500;
+            --stop-btn: #e60000;
+            --stop-hover: #ff7700;
+            --neon-border: rgba(255, 255, 255, 0.25);
         }
 
         * {
@@ -19,87 +22,216 @@
             box-sizing: border-box;
         }
 
-        body {
-            background-color: var(--purple-bg);
-            color: #ffffff;
-            font-family: 'Segoe UI', sans-serif;
+        html, body {
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            background-color: var(--purple-bg);
+            background-image: radial-gradient(circle at 50% 30%, #5c0066 0%, #290030 100%);
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: auto;
+        }
+
+        .container {
             display: flex;
             flex-direction: column;
+            height: 100vh;
+            min-height: 520px;
+            padding: 10px 14px;
+            box-sizing: border-box;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            display: flex;
             align-items: center;
-            min-height: 100vh;
+            justify-content: space-between;
+            gap: 12px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--neon-border);
+            border-radius: 8px;
+            padding: 6px 14px;
+            margin-bottom: 8px;
+            flex-shrink: 0;
         }
 
-        h1 {
+        .title-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .title-box h1 {
+            font-size: 1.15rem;
+            margin: 0;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 30px;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            letter-spacing: 1px;
+            color: #ffff00;
+            text-shadow: 0 0 10px rgba(255, 255, 0, 0.4);
+            white-space: nowrap;
         }
 
-        .soundboard-grid {
+        #status {
+            font-size: 0.85rem;
+            color: #39ff14;
+            background: #000000;
+            border: 1px solid #333333;
+            padding: 4px 12px;
+            border-radius: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 450px;
+        }
+
+        .btn-master-stop {
+            background-color: var(--stop-btn);
+            color: #ffffff;
+            border: 2px solid #ffffff;
+            border-radius: 6px;
+            padding: 6px 16px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.15s ease;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+            white-space: nowrap;
+        }
+
+        .btn-master-stop:hover {
+            background-color: var(--stop-hover);
+            color: #000000;
+            transform: scale(1.02);
+        }
+
+        /* Soundboards 3-Column Layout */
+        .soundboards-grid {
+            display: grid;
+            grid-template-columns: 2.1fr 1fr 1fr;
+            gap: 10px;
+            flex: 1;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        .soundboard-card {
+            background: var(--card-bg);
+            border: 1px solid var(--neon-border);
+            border-radius: 8px;
+            padding: 8px 10px;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            overflow-y: auto;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #ff00cc;
+            padding-bottom: 4px;
+            margin-bottom: 6px;
+            flex-shrink: 0;
+        }
+
+        .card-header h3 {
+            margin: 0;
+            font-size: 0.95rem;
+            color: #ff00cc;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .card-badge {
+            font-size: 0.7rem;
+            background: #000;
+            color: #39ff14;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid #444;
+        }
+
+        .buttons-subgrid-2012 {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            width: 100%;
-            max-width: 900px;
-            margin-bottom: 25px;
+            gap: 5px;
+            flex: 1;
+            align-content: start;
         }
 
-        @media (max-width: 768px) {
-            .soundboard-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
+        .buttons-subgrid-2col {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 5px;
+            flex: 1;
+            align-content: start;
         }
 
         .sound-btn {
             background-color: var(--purple-btn);
             color: #ffffff;
-            border: 2px solid #ffffff;
-            border-radius: 8px;
-            padding: 20px 10px;
-            font-size: 1.1rem;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 5px;
+            padding: 5px 3px;
+            font-size: 0.78rem;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.15s ease;
             text-align: center;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 32px;
+            user-select: none;
         }
 
         .sound-btn:hover {
             background-color: var(--purple-hover);
             color: #000000;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+            border-color: #000000;
+            transform: translateY(-1px);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.35);
         }
 
         .sound-btn:active {
             transform: translateY(1px);
         }
 
-        .stop-btn {
-            grid-column: span 4;
+        .btn-bg-music {
+            background-color: #006622;
+        }
+
+        .btn-special {
+            background-color: #0055aa;
+        }
+
+        .btn-solve {
+            background-color: #880088;
+        }
+
+        .card-stop-btn {
             background-color: var(--stop-btn);
-            font-size: 1.3rem;
-            padding: 22px;
+            color: #ffffff;
+            font-size: 0.82rem;
+            padding: 6px;
+            margin-top: 6px;
+            border-radius: 5px;
+            border: 1px solid #ffffff;
+            cursor: pointer;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.15s ease;
+            flex-shrink: 0;
         }
 
-        @media (max-width: 768px) {
-            .stop-btn {
-                grid-column: span 2;
-            }
-        }
-
-        .stop-btn:hover {
+        .card-stop-btn:hover {
             background-color: var(--stop-hover);
             color: #000000;
-        }
-
-        #status {
-            margin-top: 15px;
-            font-size: 0.9rem;
-            color: yellow;
         }
 
         #no-roomid-msg {
@@ -119,80 +251,116 @@
             text-align: center;
             padding: 20px;
         }
+
+        @media (max-width: 1100px) {
+            .soundboards-grid {
+                grid-template-columns: 1fr;
+                overflow-y: auto;
+            }
+            .container {
+                height: auto;
+                min-height: 100vh;
+            }
+        }
     </style>
 </head>
 
 <body>
 
-    <h1>Bảng Điều Khiển Âm Thanh</h1>
+    <div class="container">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="title-box">
+                <h1>Bảng Điều Khiển Âm Thanh</h1>
+            </div>
+            <div id="status">Hệ thống sẵn sàng</div>
+            <button class="btn-master-stop" onclick="triggerSound('STOP')">⏹ DỪNG TẤT CẢ ÂM THANH</button>
+        </div>
 
-    <h3>Soundboard(2012)</h3>
-    <div class="soundboard-grid">
-        <button class="sound-btn" onclick="triggerSound('Nhạc nền 1.mp3')">Nhạc nền 1</button>
-        <button class="sound-btn" onclick="triggerSound('Nhạc nền 2.mp3')">Nhạc nền 2</button>
-        <button class="sound-btn" onclick="triggerSound('Nhạc nền 3.mp3')">Nhạc nền 3</button>
-        <button class="sound-btn" onclick="triggerSound('Nhạc nền 4.mp3')">Nhạc nền 4</button>
-        <button class="sound-btn" onclick="triggerSound('Nhạc nền 5.mp3')">Nhạc nền 5</button>
-        <button class="sound-btn" onclick="triggerSound('Nhạc nền 6.mp3')">Nhạc nền 6</button>
-        <button class="sound-btn" onclick="triggerSound('Nhạc nền 7.mp3')">Nhạc nền 7</button>
+        <!-- 3-Column Soundboards Grid -->
+        <div class="soundboards-grid">
+            <!-- Soundboard 2012 -->
+            <div class="soundboard-card">
+                <div class="card-header">
+                    <h3>Soundboard (2012)</h3>
+                    <span class="card-badge">27 Âm thanh</span>
+                </div>
+                <div class="buttons-subgrid-2012">
+                    <button class="sound-btn btn-bg-music" onclick="triggerSound('Nhạc nền 1.mp3')">Nhạc nền 1</button>
+                    <button class="sound-btn btn-bg-music" onclick="triggerSound('Nhạc nền 2.mp3')">Nhạc nền 2</button>
+                    <button class="sound-btn btn-bg-music" onclick="triggerSound('Nhạc nền 3.mp3')">Nhạc nền 3</button>
+                    <button class="sound-btn btn-bg-music" onclick="triggerSound('Nhạc nền 4.mp3')">Nhạc nền 4</button>
+                    <button class="sound-btn btn-bg-music" onclick="triggerSound('Nhạc nền 5.mp3')">Nhạc nền 5</button>
+                    <button class="sound-btn btn-bg-music" onclick="triggerSound('Nhạc nền 6.mp3')">Nhạc nền 6</button>
+                    <button class="sound-btn btn-bg-music" onclick="triggerSound('Nhạc nền 7.mp3')">Nhạc nền 7</button>
 
-        <button class="sound-btn" onclick="triggerSound('Intro_2.mp3')">Intro</button>
-        <button class="sound-btn" onclick="triggerSound('Open_2_1.mp3')">Open</button>
-        <button class="sound-btn" onclick="triggerSound('Credit.mp3')">Credit</button>
-        <button class="sound-btn" onclick="triggerSound('Phần thưởng.mp3')">Phần thưởng</button>
-        <button class="sound-btn" onclick="triggerSound('Ô Bí Mật.mp3')">Ô Bí Mật</button>
-        <button class="sound-btn" onclick="triggerSound('Mất Lượt.mp3')">Mất Lượt</button>
-        <button class="sound-btn" onclick="triggerSound('Mất Điểm.mp3')">Mất Điểm</button>
-        <button class="sound-btn" onclick="triggerSound('Thêm Lượt.mp3')">Thêm Lượt</button>
-        <button class="sound-btn" onclick="triggerSound('May Mắn.mp3')">May Mắn</button>
-        <button class="sound-btn" onclick="triggerSound('Nhân Đôi.mp3')">Nhân Đôi</button>
-        <button class="sound-btn" onclick="triggerSound('Chia Đôi.mp3')">Chia Đôi</button>
-        <button class="sound-btn" onclick="triggerSound('ClearPuzzle.mp3')">Solve</button>
+                    <button class="sound-btn" onclick="triggerSound('Intro_2.mp3')">Intro</button>
+                    <button class="sound-btn" onclick="triggerSound('Open_2_1.mp3')">Open</button>
+                    <button class="sound-btn" onclick="triggerSound('Credit.mp3')">Credit</button>
+                    <button class="sound-btn" onclick="triggerSound('Phần thưởng.mp3')">Phần thưởng</button>
+                    <button class="sound-btn" onclick="triggerSound('Ô Bí Mật.mp3')">Ô Bí Mật</button>
+                    <button class="sound-btn" onclick="triggerSound('Mất Lượt.mp3')">Mất Lượt</button>
+                    <button class="sound-btn" onclick="triggerSound('Mất Điểm.mp3')">Mất Điểm</button>
+                    <button class="sound-btn" onclick="triggerSound('Thêm Lượt.mp3')">Thêm Lượt</button>
+                    <button class="sound-btn" onclick="triggerSound('May Mắn.mp3')">May Mắn</button>
+                    <button class="sound-btn" onclick="triggerSound('Nhân Đôi.mp3')">Nhân Đôi</button>
+                    <button class="sound-btn" onclick="triggerSound('Chia Đôi.mp3')">Chia Đôi</button>
+                    <button class="sound-btn btn-solve" onclick="triggerSound('ClearPuzzle.mp3')">Solve</button>
 
-        <button class="sound-btn" onclick="triggerSound('Vòng đặc biệt.mp3')">Vòng đặc biệt</button>
-        <button class="sound-btn" onclick="triggerSound('Vòng chung kết.mp3')">Vòng chung kết</button>
-        <button class="sound-btn" onclick="triggerSound('Nhạc quay Nón 1.mp3')">Nhạc quay Nón 1</button>
-        <button class="sound-btn" onclick="triggerSound('Nhạc quay Nón 2.mp3')">Nhạc quay Nón 2</button>
-        <button class="sound-btn" onclick="triggerSound('Nhạc quay Nón 3.mp3')">Nhạc quay Nón 3</button>
-        <button class="sound-btn" onclick="triggerSound('Người chơi.mp3')">Người chơi</button>
-        <button class="sound-btn" onclick="triggerSound('30s.mp3')">30 giây</button>
-        <button class="sound-btn" onclick="triggerSound('10s_2.mp3')">10 giây</button>
+                    <button class="sound-btn btn-special" onclick="triggerSound('Vòng đặc biệt.mp3')">Vòng đặc biệt</button>
+                    <button class="sound-btn btn-special" onclick="triggerSound('Vòng chung kết.mp3')">Vòng chung kết</button>
+                    <button class="sound-btn" onclick="triggerSound('Nhạc quay Nón 1.mp3')">Nhạc quay 1</button>
+                    <button class="sound-btn" onclick="triggerSound('Nhạc quay Nón 2.mp3')">Nhạc quay 2</button>
+                    <button class="sound-btn" onclick="triggerSound('Nhạc quay Nón 3.mp3')">Nhạc quay 3</button>
+                    <button class="sound-btn" onclick="triggerSound('Người chơi.mp3')">Người chơi</button>
+                    <button class="sound-btn" onclick="triggerSound('30s.mp3')">30 giây</button>
+                    <button class="sound-btn" onclick="triggerSound('10s_2.mp3')">10 giây</button>
+                </div>
+                <button class="card-stop-btn" onclick="triggerSound('STOP')">DỪNG NHẠC (2012)</button>
+            </div>
 
-        <button class="sound-btn stop-btn" onclick="triggerSound('STOP')">DỪNG NHẠC</button>
+            <!-- Soundboard 2001 -->
+            <div class="soundboard-card">
+                <div class="card-header">
+                    <h3>Soundboard (2001)</h3>
+                    <span class="card-badge">8 Âm thanh</span>
+                </div>
+                <div class="buttons-subgrid-2col">
+                    <button class="sound-btn" onclick="triggerSound('intro_2001_full.mp3')">Intro</button>
+                    <button class="sound-btn" onclick="triggerSound('nhac_host_entrance.mp3')">Open</button>
+                    <button class="sound-btn btn-solve" onclick="triggerSound('solved 2001.mp3')">Solve</button>
+                    <button class="sound-btn" onclick="triggerSound('letter_open_1.wav')">Mở chữ</button>
+                    <button class="sound-btn" onclick="triggerSound('mo o chu 2001 2.mp3')">Đánh dấu</button>
+                    <button class="sound-btn" onclick="triggerSound('nhac_hien_o_chu.mp3')">Hiện ô chữ</button>
+                    <button class="sound-btn btn-special" onclick="triggerSound('nhac_prize_vđb_1.mp3')">Vòng Đặc biệt</button>
+                    <button class="sound-btn" onclick="triggerSound('30s_vđb_2005.wav')">30 giây</button>
+                </div>
+                <button class="card-stop-btn" onclick="triggerSound('STOP')">DỪNG NHẠC (2001)</button>
+            </div>
+
+            <!-- Soundboard 2011 -->
+            <div class="soundboard-card">
+                <div class="card-header">
+                    <h3>Soundboard (2011)</h3>
+                    <span class="card-badge">11 Âm thanh</span>
+                </div>
+                <div class="buttons-subgrid-2col">
+                    <button class="sound-btn" onclick="triggerSound('intro_2001_full.mp3')">Intro</button>
+                    <button class="sound-btn" onclick="triggerSound('intro 2010.mp3')">Open (1)</button>
+                    <button class="sound-btn" onclick="triggerSound('Open_2.mp3')">Open (2)</button>
+                    <button class="sound-btn" onclick="triggerSound('Open_3.mp3')">Open (3)</button>
+                    <button class="sound-btn" onclick="triggerSound('Credit_2011.mp3')">Credit</button>
+                    <button class="sound-btn" onclick="triggerSound('letter_highlight_new.wav')">Đánh dấu</button>
+                    <button class="sound-btn" onclick="triggerSound('letter_open.wav')">Mở chữ</button>
+                    <button class="sound-btn" onclick="triggerSound('showpuzzle.wav')">Hiện ô chữ</button>
+                    <button class="sound-btn btn-solve" onclick="triggerSound('solved.mp3')">Solve</button>
+                    <button class="sound-btn" style="background-color:#990000;" onclick="triggerSound('wrong_1.mp3')">Sai</button>
+                    <button class="sound-btn" onclick="triggerSound('think.mp3')">10 giây</button>
+                </div>
+                <button class="card-stop-btn" onclick="triggerSound('STOP')">DỪNG NHẠC (2011)</button>
+            </div>
+        </div>
     </div>
-
-    <h3>Soundboard(2001)</h3>
-    <div class="soundboard-grid">
-        <button class="sound-btn" onclick="triggerSound('intro_2001_full.mp3')">Intro</button>
-        <button class="sound-btn" onclick="triggerSound('nhac_host_entrance.mp3')">Open</button>
-        <button class="sound-btn" onclick="triggerSound('solved 2001.mp3')">Solve</button>
-        <button class="sound-btn" onclick="triggerSound('letter_open_1.wav')">Mở chữ</button>
-        <button class="sound-btn" onclick="triggerSound('mo o chu 2001 2.mp3')">Đánh dấu</button>
-        <button class="sound-btn" onclick="triggerSound('nhac_hien_o_chu.mp3')">Hiện ô chữ</button>
-        <button class="sound-btn" onclick="triggerSound('nhac_prize_vđb_1.mp3')">Vòng Đặc biệt</button>
-        <button class="sound-btn" onclick="triggerSound('30s_vđb_2005.wav')">30 giây</button>
-
-        <button class="sound-btn stop-btn" onclick="triggerSound('STOP')">DỪNG NHẠC</button>
-    </div>
-
-    <h3>Soundboard(2011)</h3>
-    <div class="soundboard-grid">
-        <button class="sound-btn" onclick="triggerSound('intro_2001_full.mp3')">Intro</button>
-        <button class="sound-btn" onclick="triggerSound('intro 2010.mp3')">Open(1)</button>
-        <button class="sound-btn" onclick="triggerSound('Open_2.mp3')">Open(2)</button>
-        <button class="sound-btn" onclick="triggerSound('Open_3.mp3')">Open(3)</button>
-        <button class="sound-btn" onclick="triggerSound('Credit_2011.mp3')">Credit</button>
-        <button class="sound-btn" onclick="triggerSound('letter_highlight_new.wav')">Đánh dấu</button>
-        <button class="sound-btn" onclick="triggerSound('letter_open.wav')">Mở chữ</button>
-        <button class="sound-btn" onclick="triggerSound('showpuzzle.wav')">Hiện ô chữ</button>
-        <button class="sound-btn" onclick="triggerSound('solved.mp3')">Solve</button>
-        <button class="sound-btn" onclick="triggerSound('wrong_1.mp3')">Sai</button>
-        <button class="sound-btn" onclick="triggerSound('think.mp3')">10 giây</button>
-
-        <button class="sound-btn stop-btn" onclick="triggerSound('STOP')">DỪNG NHẠC</button>
-    </div>
-
-    <div id="status">Hệ thống sẵn sàng</div>
 
     <script>
         var SUPABASE_URL = 'https://tfdgtdderkaergijhucb.supabase.co';
@@ -243,3 +411,4 @@
 </body>
 
 </html>
+

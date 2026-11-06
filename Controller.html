@@ -14,86 +14,95 @@
 
         * {
             font-weight: bold !important;
+            box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background: #5a4636;
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: auto;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #2a1e16;
+            background-image: radial-gradient(circle at 50% 20%, #443224 0%, #1a130e 100%);
             color: #fff;
-            padding: 20px;
+            font-size: 13px;
+        }
+
+        /* 4-Column Layout */
+        .controller-grid {
             display: grid;
-            grid-template-columns: 1fr 350px;
-            gap: 20px;
+            grid-template-columns: 290px 1.25fr 1.05fr 320px;
+            gap: 8px;
+            padding: 8px;
+            min-width: 1360px;
+            height: 100vh;
+            max-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .col {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-height: 0;
+            overflow-y: auto;
+            padding-right: 2px;
         }
 
         .panel {
-            background: #222;
-            padding: 15px;
-            border-radius: 10px;
-            border-top: 4px solid var(--pink);
-            margin-bottom: 15px;
+            background: #1c1c1c;
+            padding: 7px 9px;
+            border-radius: 6px;
+            border-top: 3px solid var(--pink);
+            border-left: 1px solid #333;
+            border-right: 1px solid #333;
+            border-bottom: 1px solid #333;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+            flex-shrink: 0;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #3a3a3a;
+            padding-bottom: 3px;
+            margin-bottom: 6px;
         }
 
         h3 {
-            margin-top: 0;
+            margin: 0;
+            font-size: 0.8rem;
             color: var(--pink);
-            border-bottom: 1px solid #444;
-            padding-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .sub-label {
+            color: var(--pink);
+            font-size: 0.72rem;
+            margin: 6px 0 3px 0;
             text-transform: uppercase;
         }
 
-        .excel-upload-wrapper {
-            background: #333;
-            border: 2px dashed var(--neon);
-            padding: 25px;
-            text-align: center;
-            border-radius: 8px;
-            transition: 0.3s;
-            position: relative;
-        }
-
-        .excel-upload-wrapper:hover {
-            background: #3d3d3d;
-            border-color: #fff;
-        }
-
-        input[type="file"] {
-            display: none;
-        }
-
-        .custom-file-upload {
-            display: inline-block;
-            padding: 12px 25px;
-            cursor: pointer;
-            background: var(--neon);
-            color: #000;
-            border-radius: 5px;
-            text-transform: uppercase;
-            transition: 0.2s;
-        }
-
-        #file-name-display {
-            display: block;
-            margin-top: 10px;
-            color: #aaa;
-            font-size: 0.9rem;
-        }
-
-        .grid-buttons {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 10px;
-        }
-
+        /* Buttons general */
         button {
-            padding: 10px;
+            padding: 5px 3px;
             cursor: pointer;
-            border-radius: 5px;
+            border-radius: 4px;
             border: none;
-            transition: 0.2s;
+            transition: all 0.15s ease;
             background: #39ff14;
             color: black;
             text-transform: uppercase;
+            font-size: 0.72rem;
+            line-height: 1.15;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
         }
 
         button:hover:not(:disabled) {
@@ -107,27 +116,581 @@
             cursor: not-allowed;
         }
 
+        /* Grid buttons */
+        .grid-buttons {
+            display: grid;
+            gap: 4px;
+        }
+
+        .round-buttons {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .round-buttons button {
+            padding: 4px 2px;
+            font-size: 0.72rem;
+            min-height: 25px;
+        }
+
         .btn-round {
             background: #39ff14;
             color: black;
         }
 
-        .btn-reveal-all {
-            background: aqua;
-            color: black;
-            width: 100%;
-            margin-top: 10px;
-            border: 1px solid #00d9ff;
+        .db5-buttons {
+            grid-template-columns: repeat(5, 1fr);
         }
 
-        .btn-reset {
+        .db5-buttons button {
+            padding: 4px 1px;
+            font-size: 0.72rem;
+        }
+
+        .buzzer-buttons {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .buzzer-buttons button {
+            padding: 4px 2px;
+            font-size: 0.7rem;
+        }
+
+        .banner-buttons {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .banner-buttons button {
+            padding: 3px 2px;
+            font-size: 0.68rem;
+        }
+
+        .board-action-buttons {
+            grid-template-columns: repeat(6, 1fr);
+            margin-top: 6px;
+        }
+
+        .board-action-buttons button {
+            padding: 5px 2px;
+            font-size: 0.7rem;
+            grid-column: span 2;
+        }
+
+        .board-action-buttons .btn-reset {
+            grid-column: span 3;
             background: red;
             color: white;
-            width: 100%;
-            margin-top: 10px;
             border: 1px solid #f00;
         }
 
+        .board-action-buttons .btn-stop-audio {
+            grid-column: span 3;
+            background: blue;
+            color: white;
+            border: 1px solid #0055ff;
+        }
+
+        /* Room Panel */
+        .btn-create-room {
+            background-color: #ff0000;
+            color: #ffffff;
+            width: 100%;
+            padding: 5px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+            font-size: 0.8rem;
+        }
+
+        .btn-create-room:hover {
+            background-color: #ffa500;
+            color: #000000;
+        }
+
+        .room-info-box {
+            border: 1px solid #ff00cc;
+            background-color: #0b0b0b;
+            padding: 5px 6px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .room-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 3px;
+            margin-bottom: 4px;
+            border-bottom: 1px dashed #333;
+        }
+
+        .status-badge {
+            color: #39ff14;
+            font-size: 0.7rem;
+        }
+
+        .room-id-badge {
+            color: #fff;
+            font-size: 0.78rem;
+        }
+
+        .val-yellow { color: #ffff00; }
+
+        .room-compact-rows {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .room-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #141414;
+            border: 1px solid #2a2a2a;
+            border-radius: 3px;
+            padding: 2px 5px;
+            min-height: 24px;
+        }
+
+        .room-row.row-p1 { border-left: 3px solid #ff3333; }
+        .room-row.row-p2 { border-left: 3px solid #ffff00; }
+        .room-row.row-p3 { border-left: 3px solid #0088ff; }
+
+        .room-row-label {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.72rem;
+            white-space: nowrap;
+        }
+
+        .label-pink { color: #ff00cc; }
+        .tag-p1 { color: #ff5555; }
+        .tag-p2 { color: #ffff33; }
+        .tag-p3 { color: #33aaff; }
+
+        .pass-tag {
+            color: #aaa;
+            font-size: 0.68rem;
+            background: #000;
+            padding: 1px 4px;
+            border-radius: 3px;
+            border: 1px solid #333;
+        }
+
+        .pass-tag b { color: #ffff00; }
+
+        .room-row-actions {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .btn-row-open {
+            background: #39ff14;
+            color: #000 !important;
+            font-size: 0.68rem;
+            padding: 2px 6px;
+            border-radius: 3px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            line-height: 1;
+        }
+
+        .btn-row-open:hover {
+            background: #ffa500;
+            color: #000000 !important;
+        }
+
+        .btn-row-copy {
+            background: #252525;
+            color: #eee;
+            font-size: 0.68rem;
+            padding: 2px 6px;
+            border-radius: 3px;
+            border: 1px solid #444;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .btn-row-copy:hover {
+            background: #383838;
+            color: #39ff14;
+        }
+
+        /* Excel Upload */
+        .excel-upload-wrapper {
+            background: #242424;
+            border: 1px dashed var(--neon);
+            padding: 6px;
+            text-align: center;
+            border-radius: 5px;
+            transition: 0.2s;
+        }
+
+        .excel-upload-wrapper:hover {
+            background: #2d2d2d;
+            border-color: #fff;
+        }
+
+        input[type="file"] { display: none; }
+
+        .custom-file-upload {
+            display: inline-block;
+            padding: 5px 12px;
+            cursor: pointer;
+            background: var(--neon);
+            color: #000;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-size: 0.72rem;
+            transition: 0.2s;
+        }
+
+        #file-name-display {
+            display: block;
+            margin-top: 3px;
+            color: #aaa;
+            font-size: 0.7rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Status Grid */
+        .status-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px;
+        }
+
+        .st-item {
+            background: #111;
+            padding: 4px 6px;
+            border-radius: 4px;
+            border: 1px solid #2d2d2d;
+        }
+
+        .st-full {
+            grid-column: span 2;
+        }
+
+        .st-lbl {
+            color: #aaa;
+            font-size: 0.68rem;
+            display: block;
+            margin-bottom: 1px;
+        }
+
+        .st-val {
+            color: var(--neon);
+            font-size: 0.85rem;
+            display: block;
+            word-break: break-word;
+        }
+
+        /* Colors Section */
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 4px;
+        }
+
+        .color-grid button {
+            padding: 4px 2px;
+            font-size: 0.7rem;
+            border-radius: 3px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        /* Sound Selects Rows */
+        .sound-selects-row {
+            display: flex;
+            gap: 6px;
+            margin-top: 4px;
+        }
+
+        .select-col {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .select-col label {
+            color: var(--neon);
+            font-size: 0.68rem;
+            display: block;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        select {
+            width: 100%;
+            padding: 3px 4px;
+            background: #000;
+            color: #fff;
+            border: 1px solid #555;
+            border-radius: 3px;
+            font-size: 0.72rem;
+            outline: none;
+        }
+
+        select:focus {
+            border-color: var(--neon);
+        }
+
+        /* Keyboard Panel */
+        .keyboard {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 3px;
+            margin-bottom: 6px;
+            background: #000;
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px solid #333;
+        }
+
+        .key {
+            padding: 5px 1px;
+            font-size: 0.82rem;
+            background: green;
+            color: white;
+            border-radius: 3px;
+            min-height: 26px;
+        }
+
+        .key.used {
+            background: #111;
+            color: #555 !important;
+            opacity: 0.4;
+            pointer-events: none;
+            border: 1px solid #222;
+        }
+
+        /* Pos Control */
+        .pos-control {
+            background: #202020;
+            padding: 6px 8px;
+            border-radius: 6px;
+            border: 1px solid #3a3a3a;
+        }
+
+        .pos-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        #numPos {
+            width: 85px;
+            padding: 3px 5px;
+            background: #000;
+            color: #fff;
+            border: 1px solid #555;
+            border-radius: 3px;
+            font-size: 0.75rem;
+            text-align: center;
+        }
+
+        .pos-input-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3px;
+            margin: 4px 0;
+            min-height: 18px;
+        }
+
+        .pos-input-grid input {
+            width: 32px;
+            height: 24px;
+            padding: 2px;
+            text-align: center;
+            background: #000;
+            color: var(--neon);
+            border: 1px solid var(--neon);
+            border-radius: 3px;
+            font-size: 0.75rem;
+        }
+
+        .btn-action {
+            background: var(--pink);
+            color: #000;
+            padding: 5px;
+            font-size: 0.72rem;
+            flex: 1;
+            border-radius: 3px;
+        }
+
+        .restore-wrapper {
+            margin-top: 5px;
+            border-top: 1px dashed #444;
+            padding-top: 4px;
+        }
+
+        #restoreContainer {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3px;
+            align-items: center;
+            min-height: 20px;
+            margin-top: 3px;
+        }
+
+        .sai-buttons {
+            grid-template-columns: repeat(4, 1fr);
+            gap: 3px;
+            margin-top: 5px;
+        }
+
+        .sai-buttons button {
+            padding: 4px 1px;
+            font-size: 0.7rem;
+        }
+
+        .quick-controls {
+            display: flex;
+            gap: 4px;
+            margin-top: 4px;
+        }
+
+        .btn-quick {
+            background: purple;
+            color: white;
+            flex: 1;
+            font-size: 0.68rem;
+            padding: 5px 2px;
+        }
+
+        /* Player Score Panels */
+        .score-panel-main {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .player-panel {
+            background: #161616;
+            border: 1px solid #333;
+            padding: 5px 7px;
+            border-radius: 5px;
+        }
+
+        .player-panel-red { border: 2px solid #ff0000 !important; background-color: #ffffff !important; }
+        .player-panel-yellow { border: 2px solid #ffff00 !important; background-color: #2a1e16; }
+        .player-panel-blue { border: 2px solid #0000ff !important; background-color: #ffffff !important; }
+
+        .player-panel-red .last-spin-label,
+        .player-panel-blue .last-spin-label {
+            color: #000000 !important;
+            font-weight: bold;
+        }
+
+        .player-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3px;
+        }
+
+        .player-name {
+            font-size: 0.75rem;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+        }
+
+        .player-name-red { color: #ff0000 !important; }
+        .player-name-yellow { color: #ffff00 !important; }
+        .player-name-blue { color: #0000ff !important; }
+
+        .player-scores {
+            display: flex;
+            gap: 3px;
+        }
+
+        .score-badge {
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.78rem;
+            min-width: 42px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .badge-red { background: #ff0000 !important; color: #ffffff !important; }
+        .badge-yellow { background: #ffff00 !important; color: #000000 !important; }
+        .badge-blue { background: #0000ff !important; color: #ffffff !important; }
+
+        .player-input-row {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            margin-bottom: 3px;
+        }
+
+        .player-input-row input[type="text"] {
+            flex: 1;
+            padding: 3px 5px;
+            background: #000;
+            color: #fff;
+            border: 1px solid #444;
+            border-radius: 3px;
+            font-size: 0.75rem;
+        }
+
+        .last-spin-label {
+            font-size: 0.65rem;
+            color: #ddd;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            cursor: pointer;
+        }
+
+        .player-btn-row {
+            display: flex;
+            gap: 2px;
+            margin-bottom: 2px;
+        }
+
+        .player-btn-row button {
+            flex: 1;
+            padding: 3px 1px;
+            font-size: 8px;
+            min-height: 20px;
+        }
+
+        .btn-score-add-tot { background: green; color: white; }
+        .btn-score-add-rnd { background: #39ff14; color: black; }
+        .btn-score-sub-rnd { background: aqua; color: black; }
+
+        .btn-mult {
+            background: #2a2a2a;
+            color: #fff;
+            border: 1px solid #444;
+        }
+
+        .global-score-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3px;
+            margin-top: 3px;
+        }
+
+        .global-score-grid button {
+            padding: 4px 2px;
+            font-size: 8px;
+        }
+
+        /* Modal & Lock */
         .modal {
             display: none;
             position: fixed;
@@ -142,293 +705,20 @@
         .modal-content {
             background: #222;
             margin: 10% auto;
-            padding: 30px;
-            width: 550px;
-            border-radius: 15px;
+            padding: 25px;
+            width: 500px;
+            border-radius: 12px;
             border: 3px solid var(--pink);
             text-align: center;
             box-shadow: 0 0 30px rgba(255, 0, 204, 0.5);
         }
 
-        .category-option {
-            display: block;
-            width: 100%;
-            margin: 10px 0;
-            padding: 15px;
-            background: #111;
-            color: var(--neon);
-            border: 2px solid var(--neon);
-            font-size: 1.1rem;
-        }
-
-        .keyboard {
-            display: grid;
-            grid-template-columns: repeat(8, 1fr);
-            gap: 5px;
-            margin-bottom: 15px;
-            background: #000;
-            padding: 10px;
-            border-radius: 5px;
-        }
-
-        .key {
-            padding: 12px 2px;
-            font-size: 1.1rem;
-            background: green;
-            color: white;
-        }
-
-        .key.used {
-            background: #111;
-            color: #555 !important;
-            opacity: 0.4;
-            pointer-events: none;
-            border: 1px solid #222;
-        }
-
-        .pos-control {
-            background: #333;
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid #444;
-        }
-
-        .pos-input-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin: 15px 0;
-            min-height: 20px;
-        }
-
-        .pos-input-grid input {
-            width: 45px;
-            padding: 8px;
-            text-align: center;
-            background: #000;
-            color: var(--neon);
-            border: 1px solid var(--neon);
-            border-radius: 4px;
-        }
-
-        .btn-action {
-            background: var(--pink);
-            color: #000;
-            padding: 12px;
-            font-size: 0.85rem;
-            flex: 1;
-        }
-
-        .quick-controls {
-            display: flex;
-            gap: 5px;
-            margin-top: 10px;
-        }
-
-        .btn-quick {
-            background: purple;
-            color: white;
-            flex: 1;
-            font-size: 0.7rem;
-            padding: 8px 2px;
-        }
-
-        .st-val {
-            color: var(--neon);
-            font-size: 1.2rem;
-            display: block;
-            margin-top: 5px;
-        }
-
         .btn-close-popup {
             background: #555;
             color: white;
-            padding: 10px 30px;
-            margin-top: 20px;
-            border-radius: 5px;
-        }
-
-        audio {
-            display: none;
-        }
-
-        .room-panel {
-            position: relative;
-            z-index: 60;
-            background-color: #1a1a1a;
-            border: 1px solid #333;
-            padding: 15px;
+            padding: 8px 24px;
+            margin-top: 15px;
             border-radius: 4px;
-            font-family: sans-serif;
-        }
-
-        .room-title {
-            color: #ff00cc;
-            font-size: 1rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            margin-bottom: 12px;
-        }
-
-        .btn-create-room {
-            background-color: #ff0000;
-            color: #ffffff;
-            font-weight: bold;
-            font-size: 1rem;
-            width: 100%;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 15px;
-        }
-
-        .btn-create-room:hover {
-            background-color: #ffa500;
-            color: #000000;
-        }
-
-        .room-info-box {
-            border: 1px solid #ff00cc;
-            background-color: #0b0b0b;
-            padding: 8px 10px;
-            border-radius: 6px;
-            display: none;
-            margin-top: 10px;
-        }
-
-        .room-header-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 6px;
-            margin-bottom: 6px;
-            border-bottom: 1px dashed #333;
-        }
-
-        .status-badge {
-            color: #39ff14;
-            font-size: 0.75rem;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        .room-id-badge {
-            color: #fff;
-            font-size: 0.85rem;
-            font-weight: bold;
-        }
-
-        .val-yellow {
-            color: #ffff00;
-        }
-
-        .val-white {
-            color: #ffffff;
-        }
-
-        .room-compact-rows {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .room-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #161616;
-            border: 1px solid #2a2a2a;
-            border-radius: 4px;
-            padding: 4px 8px;
-            min-height: 32px;
-        }
-
-        .room-row.row-p1 {
-            border-left: 3px solid #ff3333;
-        }
-
-        .room-row.row-p2 {
-            border-left: 3px solid #ffff00;
-        }
-
-        .room-row.row-p3 {
-            border-left: 3px solid #0088ff;
-        }
-
-        .room-row-label {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.78rem;
-            white-space: nowrap;
-        }
-
-        .label-pink {
-            color: #ff00cc;
-            font-weight: bold;
-        }
-
-        .tag-p1 { color: #ff5555; font-weight: bold; }
-        .tag-p2 { color: #ffff33; font-weight: bold; }
-        .tag-p3 { color: #33aaff; font-weight: bold; }
-
-        .pass-tag {
-            color: #aaa;
-            font-size: 0.72rem;
-            background: #000;
-            padding: 2px 5px;
-            border-radius: 3px;
-            border: 1px solid #333;
-        }
-
-        .pass-tag b {
-            color: #ffff00;
-        }
-
-        .room-row-actions {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .btn-row-open {
-            background: #39ff14;
-            color: #000 !important;
-            font-size: 0.7rem;
-            font-weight: bold;
-            padding: 4px 8px;
-            border-radius: 3px;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            line-height: 1;
-        }
-
-        .btn-row-open:hover {
-            background: #ffa500;
-            color: #000000 !important;
-            font-weight: bold !important;
-        }
-
-        .btn-row-copy {
-            background: #252525;
-            color: #eee;
-            font-size: 0.7rem;
-            font-weight: bold;
-            padding: 4px 8px;
-            border-radius: 3px;
-            border: 1px solid #444;
-            cursor: pointer;
-            line-height: 1;
-        }
-
-        .btn-row-copy:hover {
-            background: #383838;
-            color: #39ff14;
         }
 
         #lockOverlay {
@@ -458,6 +748,31 @@
             font-size: 0.9rem;
             margin-top: 12px;
         }
+
+        .col.col-1 {
+            position: relative;
+            z-index: 60;
+        }
+
+        .room-panel {
+            position: relative;
+            z-index: 70;
+            box-shadow: 0 0 15px rgba(255, 0, 204, 0.7);
+        }
+
+        .btn-create-room {
+            position: relative;
+            z-index: 80;
+            cursor: pointer !important;
+        }
+
+        audio { display: none; }
+
+        @media (max-width: 1350px) {
+            .controller-grid {
+                min-width: 1320px;
+            }
+        }
     </style>
 </head>
 
@@ -467,643 +782,587 @@
         <div>
             <p class="lock-msg">VUI LÒNG BẤM TẠO PHÒNG ĐỂ BẮT ĐẦU</p>
             <p class="lock-sub">Tất cả chức năng sẽ bị khóa cho đến khi tạo phòng.</p>
+            <button class="btn-create-room" style="max-width: 250px; margin: 16px auto 0 auto; padding: 12px 24px; font-size: 1.05rem; box-shadow: 0 0 25px rgba(255, 0, 0, 0.9); display: block;" onclick="generateRoomAndPasswords()">TẠO PHÒNG NGAY</button>
         </div>
     </div>
 
-    <div class="left-col">
-        <div class="room-panel">
-            <div class="room-title">TẠO PHÒNG VÀ MẬT KHẨU</div>
-
-            <button class="btn-create-room" onclick="generateRoomAndPasswords()">TẠO PHÒNG</button>
-
-            <div id="room-info-display" class="room-info-box">
-                <div class="room-header-row">
-                    <span class="status-badge">✓ ĐÃ TẠO PHÒNG</span>
-                    <span class="room-id-badge">MÃ PHÒNG: <b id="room-id-val" class="val-yellow">------</b></span>
+    <div class="controller-grid">
+        <!-- CỘT 1: THIẾT LẬP PHÒNG, EXCEL & TRẠNG THÁI -->
+        <div class="col col-1">
+            <!-- Room Panel -->
+            <div class="panel room-panel">
+                <div class="panel-header">
+                    <h3>TẠO PHÒNG & MẬT KHẨU</h3>
                 </div>
 
-                <div class="room-compact-rows">
-                    <!-- Hàng 1: HOST -->
-                    <div class="room-row">
-                        <div class="room-row-label">
-                            <span class="label-pink">🎤 HOST</span>
-                        </div>
-                        <div class="room-row-actions">
-                            <a id="host-link-btn" href="#" target="_blank" class="btn-row-open">MỞ ↗</a>
-                            <button class="btn-row-copy" onclick="copyLinkById('host-link-btn', this)">CHÉP LINK</button>
-                        </div>
+                <button class="btn-create-room" onclick="generateRoomAndPasswords()">TẠO PHÒNG</button>
+
+                <div id="room-info-display" class="room-info-box">
+                    <div class="room-header-row">
+                        <span class="status-badge">✓ ĐÃ TẠO PHÒNG</span>
+                        <span class="room-id-badge">MÃ PHÒNG: <b id="room-id-val" class="val-yellow">------</b></span>
                     </div>
 
-                    <!-- Hàng 2: PUZZLEBOARD -->
-                    <div class="room-row">
-                        <div class="room-row-label">
-                            <span class="label-pink">📺 PUZZLEBOARD</span>
+                    <div class="room-compact-rows">
+                        <!-- Hàng 1: HOST -->
+                        <div class="room-row">
+                            <div class="room-row-label">
+                                <span class="label-pink">🎤 HOST</span>
+                            </div>
+                            <div class="room-row-actions">
+                                <a id="host-link-btn" href="#" target="_blank" class="btn-row-open">MỞ ↗</a>
+                                <button class="btn-row-copy" onclick="copyLinkById('host-link-btn', this)">CHÉP</button>
+                            </div>
                         </div>
-                        <div class="room-row-actions">
-                            <a id="board-link-btn" href="#" target="_blank" class="btn-row-open">MỞ ↗</a>
-                            <button class="btn-row-copy" onclick="copyLinkById('board-link-btn', this)">CHÉP LINK</button>
-                        </div>
-                    </div>
 
-                    <!-- Hàng 3: PLAYER 1 -->
-                    <div class="room-row row-p1">
-                        <div class="room-row-label">
-                            <span class="tag-p1">🔴 P1 (ĐỎ)</span>
-                            <span class="pass-tag">MK: <b id="p1-pass-val">----</b></span>
+                        <!-- Hàng 2: PUZZLEBOARD -->
+                        <div class="room-row">
+                            <div class="room-row-label">
+                                <span class="label-pink">📺 BOARD</span>
+                            </div>
+                            <div class="room-row-actions">
+                                <a id="board-link-btn" href="#" target="_blank" class="btn-row-open">MỞ ↗</a>
+                                <button class="btn-row-copy" onclick="copyLinkById('board-link-btn', this)">CHÉP</button>
+                            </div>
                         </div>
-                        <div class="room-row-actions">
-                            <a id="p1-link-btn" href="#" target="_blank" class="btn-row-open">MỞ ↗</a>
-                            <button class="btn-row-copy" onclick="copyLinkById('p1-link-btn', this)">CHÉP LINK</button>
-                        </div>
-                    </div>
 
-                    <!-- Hàng 4: PLAYER 2 -->
-                    <div class="room-row row-p2">
-                        <div class="room-row-label">
-                            <span class="tag-p2">🟡 P2 (VÀNG)</span>
-                            <span class="pass-tag">MK: <b id="p2-pass-val">----</b></span>
+                        <!-- Hàng 3: PLAYER 1 -->
+                        <div class="room-row row-p1">
+                            <div class="room-row-label">
+                                <span class="tag-p1">🔴 P1 (ĐỎ)</span>
+                                <span class="pass-tag">MK: <b id="p1-pass-val">----</b></span>
+                            </div>
+                            <div class="room-row-actions">
+                                <a id="p1-link-btn" href="#" target="_blank" class="btn-row-open">MỞ ↗</a>
+                                <button class="btn-row-copy" onclick="copyLinkById('p1-link-btn', this)">CHÉP</button>
+                            </div>
                         </div>
-                        <div class="room-row-actions">
-                            <a id="p2-link-btn" href="#" target="_blank" class="btn-row-open">MỞ ↗</a>
-                            <button class="btn-row-copy" onclick="copyLinkById('p2-link-btn', this)">CHÉP LINK</button>
-                        </div>
-                    </div>
 
-                    <!-- Hàng 5: PLAYER 3 -->
-                    <div class="room-row row-p3">
-                        <div class="room-row-label">
-                            <span class="tag-p3">🔵 P3 (XANH)</span>
-                            <span class="pass-tag">MK: <b id="p3-pass-val">----</b></span>
+                        <!-- Hàng 4: PLAYER 2 -->
+                        <div class="room-row row-p2">
+                            <div class="room-row-label">
+                                <span class="tag-p2">🟡 P2 (VÀNG)</span>
+                                <span class="pass-tag">MK: <b id="p2-pass-val">----</b></span>
+                            </div>
+                            <div class="room-row-actions">
+                                <a id="p2-link-btn" href="#" target="_blank" class="btn-row-open">MỞ ↗</a>
+                                <button class="btn-row-copy" onclick="copyLinkById('p2-link-btn', this)">CHÉP</button>
+                            </div>
                         </div>
-                        <div class="room-row-actions">
-                            <a id="p3-link-btn" href="#" target="_blank" class="btn-row-open">MỞ ↗</a>
-                            <button class="btn-row-copy" onclick="copyLinkById('p3-link-btn', this)">CHÉP LINK</button>
+
+                        <!-- Hàng 5: PLAYER 3 -->
+                        <div class="room-row row-p3">
+                            <div class="room-row-label">
+                                <span class="tag-p3">🔵 P3 (XANH)</span>
+                                <span class="pass-tag">MK: <b id="p3-pass-val">----</b></span>
+                            </div>
+                            <div class="room-row-actions">
+                                <a id="p3-link-btn" href="#" target="_blank" class="btn-row-open">MỞ ↗</a>
+                                <button class="btn-row-copy" onclick="copyLinkById('p3-link-btn', this)">CHÉP</button>
+                            </div>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <!-- Excel Panel -->
+            <div class="panel">
+                <div class="panel-header">
+                    <h3>1. NHẬP DỮ LIỆU EXCEL</h3>
+                </div>
+                <div class="excel-upload-wrapper">
+                    <label for="excelFile" class="custom-file-upload">📁 TẢI PUZZLEBOARD.XLSX</label>
+                    <input type="file" id="excelFile" accept=".xlsx, .xls">
+                    <span id="file-name-display">Chưa chọn tệp nào</span>
+                </div>
+            </div>
+
+            <!-- Status Panel -->
+            <div class="panel">
+                <div class="panel-header">
+                    <h3>TRẠNG THÁI HIỆN TẠI</h3>
+                </div>
+                <div class="status-grid">
+                    <div class="st-item"><span class="st-lbl">Vòng:</span> <span id="st-round" class="st-val">-</span></div>
+                    <div class="st-item"><span class="st-lbl">Đồng hồ ĐB:</span> <span id="st-timer" class="st-val">45</span>s</div>
+                    <div class="st-item st-full"><span class="st-lbl">Chủ đề:</span> <span id="st-cat" class="st-val">-</span></div>
+                    <div class="st-item st-full"><span class="st-lbl">Ô chữ:</span> <span id="st-puz" class="st-val">-</span></div>
                 </div>
             </div>
         </div>
-        <div class="panel">
-            <h3>1. NHẬP DỮ LIỆU EXCEL</h3>
-            <div class="excel-upload-wrapper">
-                <label for="excelFile" class="custom-file-upload">📁 TẢI FILE PUZZLEBOARD.XLSX</label>
-                <input type="file" id="excelFile" accept=".xlsx, .xls">
-                <span id="file-name-display">Chưa chọn tệp nào</span>
-            </div>
-        </div>
 
-        <div class="panel">
-            <h3>2. HỆ THỐNG VÒNG THI</h3>
-            <div class="grid-buttons" id="round-list">
-                <button onclick="handleRound('Đoán Nhanh 1', false)">Đoán nhanh 1</button>
-                <button onclick="handleRound('Đoán Nhanh 2', false)">Đoán nhanh 2</button>
-                <button onclick="handleRound('Đoán Nhanh 3', false)">Đoán nhanh 3</button>
-                <button class="btn-round" onclick="handleRound('Vòng 1', true)">Vòng 1</button>
-                <button class="btn-round" onclick="handleRound('Vòng 2', true)">Vòng 2</button>
-                <button class="btn-round" onclick="handleRound('Vòng 3', true)">Vòng 3</button>
-                <button class="btn-round" onclick="handleRound('ĐNLH 1', false)">ĐNLH 1</button>
-                <button class="btn-round" onclick="handleRound('ĐNLH 2', false)">ĐNLH 2</button>
-                <button class="btn-round" onclick="handleRound('ĐNLH 3', false)">ĐNLH 3</button>
-                <button class="btn-round" onclick="handleRound('Vòng 4', true)">Vòng 4</button>
-                <button class="btn-round" onclick="handleRound('Vòng 5', true)">Vòng 5</button>
-                <button class="btn-round" onclick="handleRound('Vòng phụ', true)">Vòng phụ</button>
-                <button class="btn-round" onclick="handleRound('Vòng Đặc biệt', true)">Vòng ĐB</button>
-            </div>
-
-            <p style="color:var(--pink); margin: 15px 0 5px 0; font-size: 0.8rem;">CÂU HỎI PHỤ VÒNG ĐẶC BIỆT:</p>
-            <div class="grid-buttons">
-                <button style="background: #ff00cc; color: black;" onclick="handleRound('ĐB5.1', true)">ĐB 5.1</button>
-                <button style="background: #ff00cc; color: black;" onclick="handleRound('ĐB5.2', false)">ĐB 5.2</button>
-                <button style="background: #ff00cc; color: black;" onclick="handleRound('ĐB5.3', false)">ĐB 5.3</button>
-                <button style="background: #ff00cc; color: black;" onclick="handleRound('ĐB5.4', false)">ĐB 5.4</button>
-                <button style="background: #ff00cc; color: black;" onclick="handleRound('ĐB5.5', false)">ĐB 5.5</button>
-            </div>
-
-            <p style="color:var(--pink); margin: 15px 0 5px 0; font-size: 0.8rem;">ĐIỀU KHIỂN CHUÔNG TÍN HIỆU:</p>
-            <div class="grid-buttons">
-                <button style="background: aqua; color: black;" onclick="openBuzzer()">Mở chuông</button>
-                <button style="background: aqua; color: black;" onclick="lockBuzzer()">Khóa chuông</button>
-                <button style="background: aqua; color: black;" onclick="resetBuzzerAndOpen()">Reset và Mở</button>
-                <button style="background: aqua; color: black;" onclick="resetBuzzerAndLock()">Reset và Khóa</button>
-            </div>
-
-            <p style="color:var(--pink); margin: 15px 0 5px 0; font-size: 0.8rem;">ĐIỀU KHIỂN NHÃN VÒNG:</p>
-            <div class="grid-buttons" style="grid-template-columns: repeat(2, 1fr); gap: 6px;">
-                <button style="background: #39ff14; color: black; font-weight: bold;" onclick="setRoundBanner('VÒNG 1')">Hiện nhãn vòng 1</button>
-                <button style="background: #39ff14; color: black; font-weight: bold;" onclick="setRoundBanner('VÒNG 2')">Hiện nhãn vòng 2</button>
-                <button style="background: #39ff14; color: black; font-weight: bold;" onclick="setRoundBanner('VÒNG 3')">Hiện nhãn vòng 3</button>
-                <button style="background: #39ff14; color: black; font-weight: bold;" onclick="setRoundBanner('VÒNG 4')">Hiện nhãn vòng 4</button>
-                <button style="background: #39ff14; color: black; font-weight: bold;" onclick="setRoundBanner('VÒNG 5')">Hiện nhãn vòng 5</button>
-                <button style="background: #39ff14; color: black; font-weight: bold;" onclick="setRoundBanner('KHÁN GIẢ')">Hiện nhãn Vòng khán giả</button>
-                <button style="background: #39ff14; color: black; font-weight: bold; grid-column: span 2;" onclick="setRoundBanner('ĐẶC BIỆT')">Hiện nhãn Vòng đặc biệt</button>
-                <button style="background: #ff0000; color: white; font-weight: bold; grid-column: span 2;" onclick="setRoundBanner('')">Ẩn nhãn vòng</button>
-            </div>
-
-            <button id="btn-ngiah" onclick="revealNghia()"
-                style="display:none; width:100%; margin-top:10px; background: purple; color: white;">
-                MỞ CÁC CHỮ: N, G, H, I, A
-            </button>
-
-            <div id="special-guess-panel"
-                style="display:none; margin-top:15px; border: 1px dashed var(--pink); padding: 10px; background: #1a1a1a;">
-                <p style="color:var(--neon); margin:0 0 10px 0; font-size:0.8rem;">CHỮ CÁI ĐOÁN THÊM (TỐI ĐA 10):</p>
-                <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom:10px;">
-                    <input type="text" class="guess-input" maxlength="1" oninput="this.value = this.value.toUpperCase()"
-                        style="width:100%; text-align:center; background:#000; color:var(--neon); border:1px solid #555; padding: 5px 0; text-transform: uppercase;">
-                    <input type="text" class="guess-input" maxlength="1" oninput="this.value = this.value.toUpperCase()"
-                        style="width:100%; text-align:center; background:#000; color:var(--neon); border:1px solid #555; padding: 5px 0; text-transform: uppercase;">
-                    <input type="text" class="guess-input" maxlength="1" oninput="this.value = this.value.toUpperCase()"
-                        style="width:100%; text-align:center; background:#000; color:var(--neon); border:1px solid #555; padding: 5px 0; text-transform: uppercase;">
-                    <input type="text" class="guess-input" maxlength="1" oninput="this.value = this.value.toUpperCase()"
-                        style="width:100%; text-align:center; background:#000; color:var(--neon); border:1px solid #555; padding: 5px 0; text-transform: uppercase;">
-                    <input type="text" class="guess-input" maxlength="1" oninput="this.value = this.value.toUpperCase()"
-                        style="width:100%; text-align:center; background:#000; color:var(--neon); border:1px solid #555; padding: 5px 0; text-transform: uppercase;">
-                    <input type="text" class="guess-input" maxlength="1" oninput="this.value = this.value.toUpperCase()"
-                        style="width:100%; text-align:center; background:#000; color:var(--neon); border:1px solid #555; padding: 5px 0; text-transform: uppercase;">
-                    <input type="text" class="guess-input" maxlength="1" oninput="this.value = this.value.toUpperCase()"
-                        style="width:100%; text-align:center; background:#000; color:var(--neon); border:1px solid #555; padding: 5px 0; text-transform: uppercase;">
-                    <input type="text" class="guess-input" maxlength="1" oninput="this.value = this.value.toUpperCase()"
-                        style="width:100%; text-align:center; background:#000; color:var(--neon); border:1px solid #555; padding: 5px 0; text-transform: uppercase;">
-                    <input type="text" class="guess-input" maxlength="1" oninput="this.value = this.value.toUpperCase()"
-                        style="width:100%; text-align:center; background:#000; color:var(--neon); border:1px solid #555; padding: 5px 0; text-transform: uppercase;">
-                    <input type="text" class="guess-input" maxlength="1" oninput="this.value = this.value.toUpperCase()"
-                        style="width:100%; text-align:center; background:#000; color:var(--neon); border:1px solid #555; padding: 5px 0; text-transform: uppercase;">
+        <!-- CỘT 2: HỆ THỐNG VÒNG THI & ĐIỀU KHIỂN BẢNG -->
+        <div class="col col-2">
+            <div class="panel">
+                <div class="panel-header">
+                    <h3>2. HỆ THỐNG VÒNG THI</h3>
                 </div>
-                <button onclick="processSpecialGuesses()"
-                    style="width:100%; background: var(--neon); color: black; padding: 8px; font-size: 0.8rem;">
-                    XÁC NHẬN
+                <div class="grid-buttons round-buttons" id="round-list">
+                    <button onclick="handleRound('Đoán Nhanh 1', false)">Đoán nhanh 1</button>
+                    <button onclick="handleRound('Đoán Nhanh 2', false)">Đoán nhanh 2</button>
+                    <button onclick="handleRound('Đoán Nhanh 3', false)">Đoán nhanh 3</button>
+                    <button class="btn-round" onclick="handleRound('ĐNLH 1', false)">ĐNLH 1</button>
+                    <button class="btn-round" onclick="handleRound('Vòng 1', true)">Vòng 1</button>
+                    <button class="btn-round" onclick="handleRound('Vòng 2', true)">Vòng 2</button>
+                    <button class="btn-round" onclick="handleRound('Vòng 3', true)">Vòng 3</button>
+                    <button class="btn-round" onclick="handleRound('ĐNLH 2', false)">ĐNLH 2</button>
+                    <button class="btn-round" onclick="handleRound('Vòng 4', true)">Vòng 4</button>
+                    <button class="btn-round" onclick="handleRound('Vòng 5', true)">Vòng 5</button>
+                    <button class="btn-round" onclick="handleRound('Vòng phụ', true)">Vòng phụ</button>
+                    <button class="btn-round" onclick="handleRound('ĐNLH 3', false)">ĐNLH 3</button>
+                    <button class="btn-round" style="grid-column: span 4; background: #ffff00; color: #000;" onclick="handleRound('Vòng Đặc biệt', true)">Vòng Đặc Biệt</button>
+                </div>
+
+                <div class="sub-label">CÂU HỎI PHỤ VÒNG ĐẶC BIỆT:</div>
+                <div class="grid-buttons db5-buttons">
+                    <button style="background: #ff00cc; color: black;" onclick="handleRound('ĐB5.1', true)">ĐB 5.1</button>
+                    <button style="background: #ff00cc; color: black;" onclick="handleRound('ĐB5.2', false)">ĐB 5.2</button>
+                    <button style="background: #ff00cc; color: black;" onclick="handleRound('ĐB5.3', false)">ĐB 5.3</button>
+                    <button style="background: #ff00cc; color: black;" onclick="handleRound('ĐB5.4', false)">ĐB 5.4</button>
+                    <button style="background: #ff00cc; color: black;" onclick="handleRound('ĐB5.5', false)">ĐB 5.5</button>
+                </div>
+
+                <div class="sub-label">ĐIỀU KHIỂN CHUÔNG TÍN HIỆU:</div>
+                <div class="grid-buttons buzzer-buttons">
+                    <button style="background: aqua; color: black;" onclick="openBuzzer()">Mở chuông</button>
+                    <button style="background: aqua; color: black;" onclick="lockBuzzer()">Khóa chuông</button>
+                    <button style="background: aqua; color: black;" onclick="resetBuzzerAndOpen()">Reset & Mở</button>
+                    <button style="background: aqua; color: black;" onclick="resetBuzzerAndLock()">Reset & Khóa</button>
+                </div>
+
+                <div class="sub-label">ĐIỀU KHIỂN NHÃN VÒNG:</div>
+                <div class="grid-buttons banner-buttons">
+                    <button style="background: #39ff14; color: black;" onclick="setRoundBanner('VÒNG 1')">Vòng 1</button>
+                    <button style="background: #39ff14; color: black;" onclick="setRoundBanner('VÒNG 2')">Vòng 2</button>
+                    <button style="background: #39ff14; color: black;" onclick="setRoundBanner('VÒNG 3')">Vòng 3</button>
+                    <button style="background: #39ff14; color: black;" onclick="setRoundBanner('VÒNG 4')">Vòng 4</button>
+                    <button style="background: #39ff14; color: black;" onclick="setRoundBanner('VÒNG 5')">Vòng 5</button>
+                    <button style="background: #39ff14; color: black;" onclick="setRoundBanner('KHÁN GIẢ')">Khán giả</button>
+                    <button style="background: #39ff14; color: black;" onclick="setRoundBanner('ĐẶC BIỆT')">Đặc biệt</button>
+                    <button style="background: #ff0000; color: white;" onclick="setRoundBanner('')">Ẩn nhãn</button>
+                </div>
+
+                <button id="btn-ngiah" onclick="revealNghia()"
+                    style="display:none; width:100%; margin-top:6px; background: purple; color: white; padding: 5px;">
+                    MỞ CÁC CHỮ: N, G, H, I, A
                 </button>
-            </div>
 
-            <div id="quick-panel" style="display:none; margin-top:15px; border: 1px dashed #666; padding: 10px;">
-                <p style="color:var(--neon); margin:0 0 10px 0; font-size:0.8rem; font-weight:bold;">ĐIỀU KHIỂN ĐOÁN NHANH / ĐNLH (KHÔNG GIỚI HẠN THỜI GIAN):</p>
-                <div class="quick-controls">
-                    <button class="btn-quick" onclick="quickStart()">Bắt đầu hiện chữ</button>
-                    <button class="btn-quick" onclick="quickStop()">Dừng hiện chữ</button>
-                    <button class="btn-quick" onclick="quickResume()">Tiếp tục hiện chữ</button>
+                <div id="special-guess-panel"
+                    style="display:none; margin-top:8px; border: 1px dashed var(--pink); padding: 6px; background: #1a1a1a;">
+                    <p style="color:var(--neon); margin:0 0 6px 0; font-size:0.75rem;">CHỮ CÁI ĐOÁN THÊM (TỐI ĐA 10):</p>
+                    <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; margin-bottom:6px;">
+                        <input type="text" class="guess-input" maxlength="1" oninput="this.value = this.value.toUpperCase()"
+                            style="width:100%; text-align:center; background:#000; color:var(--neon); border:1px solid #555; padding: 3px 0; text-transform: uppercase;">
+                        <input type="text" class="guess-input" maxlength="1" oninput="this.value = this.value.toUpperCase()"
+                            style="width:100%; text-align:center; background:#000; color:var(--neon); border:1px solid #555; padding: 3px 0; text-transform: uppercase;">
+                        <input type="text" class="guess-input" maxlength="1" oninput="this.value = this.value.toUpperCase()"
+                            style="width:100%; text-align:center; background:#000; color:var(--neon); border:1px solid #555; padding: 3px 0; text-transform: uppercase;">
+                        <input type="text" class="guess-input" maxlength="1" oninput="this.value = this.value.toUpperCase()"
+                            style="width:100%; text-align:center; background:#000; color:var(--neon); border:1px solid #555; padding: 3px 0; text-transform: uppercase;">
+                        <input type="text" class="guess-input" maxlength="1" oninput="this.value = this.value.toUpperCase()"
+                            style="width:100%; text-align:center; background:#000; color:var(--neon); border:1px solid #555; padding: 3px 0; text-transform: uppercase;">
+                        <input type="text" class="guess-input" maxlength="1" oninput="this.value = this.value.toUpperCase()"
+                            style="width:100%; text-align:center; background:#000; color:var(--neon); border:1px solid #555; padding: 3px 0; text-transform: uppercase;">
+                        <input type="text" class="guess-input" maxlength="1" oninput="this.value = this.value.toUpperCase()"
+                            style="width:100%; text-align:center; background:#000; color:var(--neon); border:1px solid #555; padding: 3px 0; text-transform: uppercase;">
+                        <input type="text" class="guess-input" maxlength="1" oninput="this.value = this.value.toUpperCase()"
+                            style="width:100%; text-align:center; background:#000; color:var(--neon); border:1px solid #555; padding: 3px 0; text-transform: uppercase;">
+                        <input type="text" class="guess-input" maxlength="1" oninput="this.value = this.value.toUpperCase()"
+                            style="width:100%; text-align:center; background:#000; color:var(--neon); border:1px solid #555; padding: 3px 0; text-transform: uppercase;">
+                        <input type="text" class="guess-input" maxlength="1" oninput="this.value = this.value.toUpperCase()"
+                            style="width:100%; text-align:center; background:#000; color:var(--neon); border:1px solid #555; padding: 3px 0; text-transform: uppercase;">
+                    </div>
+                    <button onclick="processSpecialGuesses()"
+                        style="width:100%; background: var(--neon); color: black; padding: 5px; font-size: 0.75rem;">
+                        XÁC NHẬN
+                    </button>
                 </div>
-            </div>
 
-            <div id="db5-panel"
-                style="display:none; margin-top:15px; border: 1px dashed var(--neon); padding: 10px; background: #1a1a1a;">
-                <p style="color:var(--neon); margin:0 0 10px 0; font-size:0.8rem; font-weight:bold;">ĐIỀU KHIỂN CÂU HỎI PHỤ ĐẶC BIỆT (ĐB 5.1 - ĐB 5.5):</p>
-                
-                <div style="margin-bottom: 12px;">
-                    <label style="color:#ffffff; font-size:0.75rem; display:block; margin-bottom:5px; font-weight:bold;">CHỌN PLAYER ĐƯỢC MỞ CHUÔNG:</label>
-                    <div style="display: flex; gap: 8px;">
-                        <select id="select-db5-player"
-                            style="flex: 1; padding: 8px; background: #000; color: #fff; border: 1px solid #777; font-weight: bold; font-size: 0.85rem;">
-                            <option value="1">Player 1 (Đỏ)</option>
-                            <option value="2">Player 2 (Vàng)</option>
-                            <option value="3">Player 3 (Xanh dương)</option>
-                        </select>
-                        <button onclick="confirmDB5Player()"
-                            style="background: rgb(0, 128, 0); color: #ffffff; padding: 8px 14px; font-size: 0.8rem; border: none; font-weight: bold; cursor: pointer; border-radius: 4px;">
-                            XÁC NHẬN
-                        </button>
+                <div id="quick-panel" style="display:none; margin-top:8px; border: 1px dashed #666; padding: 6px;">
+                    <p style="color:var(--neon); margin:0 0 5px 0; font-size:0.75rem; font-weight:bold;">ĐIỀU KHIỂN ĐOÁN NHANH / ĐNLH:</p>
+                    <div class="quick-controls">
+                        <button class="btn-quick" onclick="quickStart()">Bắt đầu hiện</button>
+                        <button class="btn-quick" onclick="quickStop()">Dừng hiện</button>
+                        <button class="btn-quick" onclick="quickResume()">Tiếp tục</button>
                     </div>
                 </div>
 
-                <div style="display: flex; flex-direction: column; gap: 8px;">
-                    <button onclick="db5SetTimer45()"
-                        style="background: #ff0000; color: #ffffff; padding: 10px; font-size: 0.85rem; font-weight: bold; border: none; cursor: pointer; border-radius: 4px; text-transform: uppercase;">
-                        Đặt thời gian (45s)
-                    </button>
-                    <button onclick="db5RevealNghiaAndRandom()"
-                        style="background: #ffff00; color: #000000; padding: 10px; font-size: 0.85rem; font-weight: bold; border: none; cursor: pointer; border-radius: 4px; text-transform: uppercase;">
-                        Mở chữ NGHIA và ngẫu nhiên
-                    </button>
-                    <button onclick="db5Stop()"
-                        style="background: #0000ff; color: #ffffff; padding: 10px; font-size: 0.85rem; font-weight: bold; border: none; cursor: pointer; border-radius: 4px; text-transform: uppercase;">
-                        Dừng hiện chữ
-                    </button>
-                    <button onclick="db5Resume()"
-                        style="background: #800080; color: #ffffff; padding: 10px; font-size: 0.85rem; font-weight: bold; border: none; cursor: pointer; border-radius: 4px; text-transform: uppercase;">
-                        Tiếp tục hiện chữ
-                    </button>
-                    <button onclick="db5ResetBoard()"
-                        style="background: #ff00cc; color: #000000; padding: 10px; font-size: 0.85rem; font-weight: bold; border: none; cursor: pointer; border-radius: 4px; text-transform: uppercase;">
-                        Reset bảng trống
-                    </button>
-                </div>
-            </div>
-
-            <div id="special-round-timer-panel"
-                style="display:none; margin-top:15px; border: 1px dashed #666; padding: 10px;">
-                <p style="color:var(--neon); margin:0 0 10px 0; font-size:0.8rem;">ĐIỀU KHIỂN ĐỒNG HỒ VÒNG PHỤ & ĐB:</p>
-                <div class="quick-controls">
-                    <button style="background: blue; color: white; flex: 1; font-size: 0.75rem; padding: 8px 2px;"
-                        onclick="setTimer(30)">30 Giây</button>
-                    <button style="background: yellow; color: black; flex: 1; font-size: 0.75rem; padding: 8px 2px;"
-                        onclick="setTimer(10)">10 Giây</button>
-                    <button style="background: red; color: white; flex: 1; font-size: 0.75rem; padding: 8px 2px;"
-                        onclick="resetCountdown()">Reset Đồng Hồ</button>
-                </div>
-
-                <div style="margin-top: 10px; border-top: 1px dashed #555; padding-top: 10px;">
-                    <label style="color:var(--neon); font-size:0.8rem; display:block; margin-bottom:5px; font-weight:bold;">ĐẶT ĐỒNG HỒ LÊN BẢNG:</label>
-                    <select id="select-board-timer-pos"
-                        style="width:100%; padding:8px; background:#000; color:var(--neon); border:1px solid var(--neon); margin-bottom:8px; font-weight:bold;">
-                        <option value="1">Ô 1 (H1-C1)</option>
-                        <option value="2">Ô 2 (H1-C2)</option>
-                        <option value="3">Ô 3 (H1-C3)</option>
-                        <option value="4">Ô 4 (H1-C4)</option>
-                        <option value="5">Ô 5 (H1-C5)</option>
-                        <option value="6">Ô 6 (H1-C6)</option>
-                        <option value="7">Ô 7 (H1-C7)</option>
-                        <option value="8">Ô 8 (H1-C8)</option>
-                        <option value="9">Ô 9 (H1-C9)</option>
-                        <option value="10">Ô 10 (H1-C10)</option>
-                        <option value="11">Ô 11 (H1-C11)</option>
-                        <option value="12">Ô 12 (H1-C12)</option>
-                        <option value="13">Ô 13 (H1-C13)</option>
-                        <option value="14">Ô 14 (H1-C14)</option>
-                        <option value="15">Ô 15 (H1-C15)</option>
-                        <option value="16">Ô 16 (H1-C16)</option>
-                        <option value="17">Ô 17 (H2-C1)</option>
-                        <option value="18">Ô 18 (H2-C2)</option>
-                        <option value="19">Ô 19 (H2-C3)</option>
-                        <option value="20">Ô 20 (H2-C4)</option>
-                        <option value="21">Ô 21 (H2-C5)</option>
-                        <option value="22">Ô 22 (H2-C6)</option>
-                        <option value="23">Ô 23 (H2-C7)</option>
-                        <option value="24">Ô 24 (H2-C8)</option>
-                        <option value="25">Ô 25 (H2-C9)</option>
-                        <option value="26">Ô 26 (H2-C10)</option>
-                        <option value="27">Ô 27 (H2-C11)</option>
-                        <option value="28">Ô 28 (H2-C12)</option>
-                        <option value="29">Ô 29 (H2-C13)</option>
-                        <option value="30">Ô 30 (H2-C14)</option>
-                        <option value="31">Ô 31 (H2-C15)</option>
-                        <option value="32">Ô 32 (H2-C16)</option>
-                        <option value="33">Ô 33 (H3-C1)</option>
-                        <option value="34">Ô 34 (H3-C2)</option>
-                        <option value="35">Ô 35 (H3-C3)</option>
-                        <option value="36">Ô 36 (H3-C4)</option>
-                        <option value="37">Ô 37 (H3-C5)</option>
-                        <option value="38">Ô 38 (H3-C6)</option>
-                        <option value="39">Ô 39 (H3-C7)</option>
-                        <option value="40">Ô 40 (H3-C8)</option>
-                        <option value="41">Ô 41 (H3-C9)</option>
-                        <option value="42">Ô 42 (H3-C10)</option>
-                        <option value="43">Ô 43 (H3-C11)</option>
-                        <option value="44">Ô 44 (H3-C12)</option>
-                        <option value="45">Ô 45 (H3-C13)</option>
-                        <option value="46">Ô 46 (H3-C14)</option>
-                        <option value="47">Ô 47 (H3-C15)</option>
-                        <option value="48">Ô 48 (H3-C16)</option>
-                        <option value="49">Ô 49 (H4-C1)</option>
-                        <option value="50">Ô 50 (H4-C2)</option>
-                        <option value="51">Ô 51 (H4-C3)</option>
-                        <option value="52">Ô 52 (H4-C4)</option>
-                        <option value="53">Ô 53 (H4-C5)</option>
-                        <option value="54">Ô 54 (H4-C6)</option>
-                        <option value="55">Ô 55 (H4-C7)</option>
-                        <option value="56">Ô 56 (H4-C8)</option>
-                        <option value="57">Ô 57 (H4-C9)</option>
-                        <option value="58">Ô 58 (H4-C10)</option>
-                        <option value="59">Ô 59 (H4-C11)</option>
-                        <option value="60">Ô 60 (H4-C12)</option>
-                        <option value="61">Ô 61 (H4-C13)</option>
-                        <option value="62">Ô 62 (H4-C14)</option>
-                        <option value="63">Ô 63 (H4-C15)</option>
-                        <option value="64">Ô 64 (H4-C16)</option>
-                    </select>
-                    <div style="display: flex; gap: 8px;">
-                        <button onclick="setBoardTimerPosition()"
-                            style="flex: 1; background: rgb(0, 128, 0); color: white; padding: 8px; font-size: 0.8rem; border: none; cursor: pointer; text-transform: uppercase; font-weight: bold !important;">
-                            XÁC NHẬN
-                        </button>
-                        <button onclick="hideBoardTimer()"
-                            style="flex: 1; background: rgb(128, 0, 128); color: white; padding: 8px; font-size: 0.8rem; border: none; cursor: pointer; text-transform: uppercase; font-weight: bold !important;">
-                            ẨN ĐỒNG HỒ
-                        </button>
+                <div id="db5-panel"
+                    style="display:none; margin-top:8px; border: 1px dashed var(--neon); padding: 6px; background: #1a1a1a;">
+                    <p style="color:var(--neon); margin:0 0 6px 0; font-size:0.75rem; font-weight:bold;">CÂU HỎI PHỤ ĐẶC BIỆT (ĐB 5.1 - 5.5):</p>
+                    <div style="margin-bottom: 6px;">
+                        <div style="display: flex; gap: 6px;">
+                            <select id="select-db5-player" style="flex: 1; padding: 4px; font-size: 0.75rem;">
+                                <option value="1">Player 1 (Đỏ)</option>
+                                <option value="2">Player 2 (Vàng)</option>
+                                <option value="3">Player 3 (Xanh dương)</option>
+                            </select>
+                            <button onclick="confirmDB5Player()"
+                                style="background: rgb(0, 128, 0); color: #ffffff; padding: 4px 10px; font-size: 0.72rem;">
+                                CHỌN
+                            </button>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px;">
+                        <button onclick="db5SetTimer45()" style="background: #ff0000; color: #fff; padding: 5px 2px; font-size: 0.72rem;">ĐẶT GIỜ (45S)</button>
+                        <button onclick="db5RevealNghiaAndRandom()" style="background: #ffff00; color: #000; padding: 5px 2px; font-size: 0.72rem;">MỞ NGHIA & RANDOM</button>
+                        <button onclick="db5Stop()" style="background: #0000ff; color: #fff; padding: 5px 2px; font-size: 0.72rem;">DỪNG HIỆN</button>
+                        <button onclick="db5Resume()" style="background: #800080; color: #fff; padding: 5px 2px; font-size: 0.72rem;">TIẾP TỤC</button>
+                        <button onclick="db5ResetBoard()" style="grid-column: span 2; background: #ff00cc; color: #000; padding: 5px 2px; font-size: 0.72rem;">RESET BẢNG TRỐNG</button>
                     </div>
                 </div>
-            </div>
 
-            <div style="margin-top: 10px; display: flex; flex-direction: column; gap: 8px;">
-                <div>
-                    <label style="color:var(--neon); font-size:0.75rem; display:block; margin-bottom:3px;">OPTION CHỌN
-                        NHẠC 30S:</label>
-                    <select id="select-sound-30s"
-                        style="width:100%; padding:6px; background:#000; color:#fff; border:1px solid #555;">
-                        <option value="30s_vđb_2005.wav">Nhạc 30s VN 1</option>
-                        <option value="30s.mp3">Nhạc 30s VN 2</option>
-                    </select>
+                <div id="special-round-timer-panel"
+                    style="display:none; margin-top:8px; border: 1px dashed #666; padding: 6px;">
+                    <p style="color:var(--neon); margin:0 0 5px 0; font-size:0.75rem;">ĐỒNG HỒ VÒNG PHỤ & ĐB:</p>
+                    <div class="quick-controls">
+                        <button style="background: blue; color: white; flex: 1; font-size: 0.72rem; padding: 5px 2px;"
+                            onclick="setTimer(30)">30 Giây</button>
+                        <button style="background: yellow; color: black; flex: 1; font-size: 0.72rem; padding: 5px 2px;"
+                            onclick="setTimer(10)">10 Giây</button>
+                        <button style="background: red; color: white; flex: 1; font-size: 0.72rem; padding: 5px 2px;"
+                            onclick="resetCountdown()">Reset Đồng Hồ</button>
+                    </div>
+
+                    <div style="margin-top: 6px; border-top: 1px dashed #555; padding-top: 6px;">
+                        <label style="color:var(--neon); font-size:0.72rem; display:block; margin-bottom:3px;">ĐẶT ĐỒNG HỒ LÊN BẢNG:</label>
+                        <div style="display: flex; gap: 4px;">
+                            <select id="select-board-timer-pos" style="flex: 1; padding: 4px; font-size: 0.72rem;">
+                                <option value="1">Ô 1 (H1-C1)</option>
+                                <option value="2">Ô 2 (H1-C2)</option>
+                                <option value="3">Ô 3 (H1-C3)</option>
+                                <option value="4">Ô 4 (H1-C4)</option>
+                                <option value="5">Ô 5 (H1-C5)</option>
+                                <option value="6">Ô 6 (H1-C6)</option>
+                                <option value="7">Ô 7 (H1-C7)</option>
+                                <option value="8">Ô 8 (H1-C8)</option>
+                                <option value="9">Ô 9 (H1-C9)</option>
+                                <option value="10">Ô 10 (H1-C10)</option>
+                                <option value="11">Ô 11 (H1-C11)</option>
+                                <option value="12">Ô 12 (H1-C12)</option>
+                                <option value="13">Ô 13 (H1-C13)</option>
+                                <option value="14">Ô 14 (H1-C14)</option>
+                                <option value="15">Ô 15 (H1-C15)</option>
+                                <option value="16">Ô 16 (H1-C16)</option>
+                                <option value="17">Ô 17 (H2-C1)</option>
+                                <option value="18">Ô 18 (H2-C2)</option>
+                                <option value="19">Ô 19 (H2-C3)</option>
+                                <option value="20">Ô 20 (H2-C4)</option>
+                                <option value="21">Ô 21 (H2-C5)</option>
+                                <option value="22">Ô 22 (H2-C6)</option>
+                                <option value="23">Ô 23 (H2-C7)</option>
+                                <option value="24">Ô 24 (H2-C8)</option>
+                                <option value="25">Ô 25 (H2-C9)</option>
+                                <option value="26">Ô 26 (H2-C10)</option>
+                                <option value="27">Ô 27 (H2-C11)</option>
+                                <option value="28">Ô 28 (H2-C12)</option>
+                                <option value="29">Ô 29 (H2-C13)</option>
+                                <option value="30">Ô 30 (H2-C14)</option>
+                                <option value="31">Ô 31 (H2-C15)</option>
+                                <option value="32">Ô 32 (H2-C16)</option>
+                                <option value="33">Ô 33 (H3-C1)</option>
+                                <option value="34">Ô 34 (H3-C2)</option>
+                                <option value="35">Ô 35 (H3-C3)</option>
+                                <option value="36">Ô 36 (H3-C4)</option>
+                                <option value="37">Ô 37 (H3-C5)</option>
+                                <option value="38">Ô 38 (H3-C6)</option>
+                                <option value="39">Ô 39 (H3-C7)</option>
+                                <option value="40">Ô 40 (H3-C8)</option>
+                                <option value="41">Ô 41 (H3-C9)</option>
+                                <option value="42">Ô 42 (H3-C10)</option>
+                                <option value="43">Ô 43 (H3-C11)</option>
+                                <option value="44">Ô 44 (H3-C12)</option>
+                                <option value="45">Ô 45 (H3-C13)</option>
+                                <option value="46">Ô 46 (H3-C14)</option>
+                                <option value="47">Ô 47 (H3-C15)</option>
+                                <option value="48">Ô 48 (H3-C16)</option>
+                                <option value="49">Ô 49 (H4-C1)</option>
+                                <option value="50">Ô 50 (H4-C2)</option>
+                                <option value="51">Ô 51 (H4-C3)</option>
+                                <option value="52">Ô 52 (H4-C4)</option>
+                                <option value="53">Ô 53 (H4-C5)</option>
+                                <option value="54">Ô 54 (H4-C6)</option>
+                                <option value="55">Ô 55 (H4-C7)</option>
+                                <option value="56">Ô 56 (H4-C8)</option>
+                                <option value="57">Ô 57 (H4-C9)</option>
+                                <option value="58">Ô 58 (H4-C10)</option>
+                                <option value="59">Ô 59 (H4-C11)</option>
+                                <option value="60">Ô 60 (H4-C12)</option>
+                                <option value="61">Ô 61 (H4-C13)</option>
+                                <option value="62">Ô 62 (H4-C14)</option>
+                                <option value="63">Ô 63 (H4-C15)</option>
+                                <option value="64">Ô 64 (H4-C16)</option>
+                            </select>
+                            <button onclick="setBoardTimerPosition()"
+                                style="background: rgb(0, 128, 0); color: white; padding: 4px 8px; font-size: 0.72rem;">
+                                ĐẶT
+                            </button>
+                            <button onclick="hideBoardTimer()"
+                                style="background: rgb(128, 0, 128); color: white; padding: 4px 8px; font-size: 0.72rem;">
+                                ẨN
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <label style="color:var(--neon); font-size:0.75rem; display:block; margin-bottom:3px;">OPTION CHỌN
-                        NHẠC 10S:</label>
-                    <select id="select-sound-10s"
-                        style="width:100%; padding:6px; background:#000; color:#fff; border:1px solid #555;">
-                        <option value="think.mp3">Nhạc 10s VN 1</option>
-                        <option value="10s_2.mp3">Nhạc 10s VN 2</option>
-                        <option value="10s.mp3">Nhạc 10s US</option>
-                    </select>
-                </div>
-            </div>
 
-            <div style="display: flex; gap: 8px; margin-top: 10px;">
-                <button class="btn-reveal-all" style="flex: 1; margin-top: 0; background: #39ff14; border: 1px solid #39ff14;" onclick="revealAllCorrect()">HIỆN TOÀN BỘ (ĐÚNG)</button>
-                <button class="btn-reveal-all" style="flex: 1; margin-top: 0; background: aqua; border: 1px solid #00d9ff;" onclick="revealAllWrong()">HIỆN TOÀN BỘ (SAI)</button>
-            </div>
-            <button onclick="revealDecodingCells()"
-                style="background-color: #ffff00; color: #000000; font-weight: bold !important; width: 100%; margin-top: 10px; border: 2px solid #000;">HIỆN
-                Ô GIẢI MÃ</button>
-            <button class="btn-reset" onclick="resetBoard()">RESET BẢNG TRỐNG</button>
-            <button onclick="stopAllSounds()"
-                style="background: blue; color: white; font-weight: bold !important; width: 100%; margin-top: 10px; border: 1px solid #0055ff;">
-                DỪNG ÂM THANH
-            </button>
-        </div>
-
-        <div style="margin-top: 10px; margin-bottom: 10px;">
-            <label style="color:var(--pink); font-size:0.85rem; display:block; margin-bottom:5px;">LIST NHẠC MỞ
-                CHỮ:</label>
-            <select id="select-sound-open-word"
-                style="width:100%; padding:8px; background:#000; color:var(--neon); border:1px solid var(--pink);">
-                <option value="Nhac_Mo_chu_US.mp3">Nhạc Mở chữ US</option>
-                <option value="Nhac_mo_chu_VN_1.mp3">Nhạc Mở chữ VN 1</option>
-                <option value="Nhac_mo_chu_VN_2.mp3">Nhạc Mở chữ VN 2</option>
-                <option value="nhac_hien_o_chu.mp3">Nhạc Mở chữ VN 3</option>
-            </select>
-        </div>
-
-        <div style="margin-top: 10px; margin-bottom: 10px;">
-            <label style="color:var(--pink); font-size:0.85rem; display:block; margin-bottom:5px;">LIST NHẠC GIẢI Ô
-                CHỮ:</label>
-            <div style="display: flex; gap: 5px;">
-                <select id="select-sound-solve-puzzle"
-                    style="flex: 1; padding:8px; background:#000; color:var(--neon); border:1px solid var(--pink);">
-                    <option value="toss_up_solve.mp3">Đoán nhanh US</option>
-                    <option value="solve.mp3">Ô chữ US</option>
-                    <option value="solved 2001.mp3">Ô chữ VN 1</option>
-                    <option value="solved.mp3">Ô chữ VN 2</option>
-                    <option value="ClearPuzzle.mp3">Ô chữ VN 3</option>
-                </select>
-            </div>
-        </div>
-        <div style="display: flex; gap: 5px; margin-top: 5px;">
-            <button style="background: green; color: white; font-size: 0.75rem; padding: 8px 2px; flex: 1;"
-                onclick="triggerSound('tossup.mp3')">Đoán nhanh</button>
-        </div>
-        <div class="panel">
-            <h3>3. BÀN PHÍM ĐIỀU KHIỂN</h3>
-            <div id="keyboard" class="keyboard"></div>
-
-            <div class="pos-control">
-                <p style="margin-top:0; font-size:0.9rem; color:var(--pink);">MỞ Ô THEO VỊ TRÍ:</p>
-                <input type="number" id="numPos" placeholder="Nhập số ô cần mở..."
-                    style="width: 100%; padding: 12px; background:#000; color:#fff; border:1px solid #555; box-sizing: border-box;"
-                    oninput="generatePosInputs()">
-
-                <div id="posContainer" class="pos-input-grid"></div>
-
-                <div style="display: flex; gap: 10px;">
-                    <button id="btnPos1" class="btn-action" onclick="processSequence(1)">Mở lần 1: Đánh dấu</button>
-                    <button id="btnPos2" class="btn-action" onclick="processSequence(2)">Mở lần 2: Mở chữ</button>
-                </div>
-
-                <!-- BỔ SUNG MỤC KHÔI PHỤC CHỮ CÁI -->
-                <div style="margin-top: 12px; border-top: 1px dashed #555; padding-top: 10px;">
-                    <p style="margin: 0 0 8px 0; font-size: 0.85rem; color: var(--pink);">KHÔI PHỤC CHỮ CÁI:</p>
-                    <div id="restoreContainer" style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center; min-height: 28px;"></div>
-                </div>
-
-                <div style="margin-top: 10px; display: flex; flex-direction: column; gap: 8px;">
-                    <div>
-                        <label style="color:var(--neon); font-size:0.8rem; display:block; margin-bottom:3px;">LIST NHẠC
-                            MỞ Ô LẦN 1:</label>
-                        <select id="select-sound-step1"
-                            style="width:100%; padding:8px; background:#000; color:#fff; border:1px solid #555;">
-                            <option value="Mo_o_US.mp3">Mở ô US</option>
-                            <option value="Mo_o_Lan_1_VN_1.mp3">Mở ô lần 1 VN 1</option>
-                            <option value="Mo_o_Lan_1_VN_2.mp3">Mở ô lần 1 VN 2</option>
+                <!-- Option Nhạc 30s & 10s -->
+                <div class="sound-selects-row">
+                    <div class="select-col">
+                        <label>NHẠC 30S:</label>
+                        <select id="select-sound-30s">
+                            <option value="30s_vđb_2005.wav">Nhạc 30s VN 1</option>
+                            <option value="30s.mp3">Nhạc 30s VN 2</option>
                         </select>
                     </div>
-                    <div>
-                        <label style="color:var(--neon); font-size:0.8rem; display:block; margin-bottom:3px;">LIST NHẠC
-                            MỞ Ô LẦN 2:</label>
-                        <select id="select-sound-step2"
-                            style="width:100%; padding:8px; background:#000; color:#fff; border:1px solid #555;">
-                            <option value="Mo_o_Lan_2_VN_1.mp3">Mở ô lần 2 VN 1</option>
-                            <option value="Mo_o_Lan_2_VN_2.mp3">Mở ô lần 2 VN 2</option>
-                            <option value="none">Không có</option>
+                    <div class="select-col">
+                        <label>NHẠC 10S:</label>
+                        <select id="select-sound-10s">
+                            <option value="think.mp3">Nhạc 10s VN 1</option>
+                            <option value="10s_2.mp3">Nhạc 10s VN 2</option>
+                            <option value="10s.mp3">Nhạc 10s US</option>
                         </select>
                     </div>
-                    <div style="display: flex; gap: 5px; margin-top: 5px;">
-                        <button style="background: green; color: white; font-size: 0.75rem; padding: 8px 2px; flex: 1;"
-                            onclick="triggerSound('mo o chu 2001 2.mp3')">VN 2001</button>
+                </div>
+
+                <!-- Option Nhạc Mở chữ & Giải ô chữ -->
+                <div class="sound-selects-row" style="margin-top: 5px;">
+                    <div class="select-col">
+                        <label>NHẠC MỞ CHỮ:</label>
+                        <select id="select-sound-open-word">
+                            <option value="Nhac_Mo_chu_US.mp3">Nhạc Mở chữ US</option>
+                            <option value="Nhac_mo_chu_VN_1.mp3">Nhạc Mở chữ VN 1</option>
+                            <option value="Nhac_mo_chu_VN_2.mp3">Nhạc Mở chữ VN 2</option>
+                            <option value="nhac_hien_o_chu.mp3">Nhạc Mở chữ VN 3</option>
+                        </select>
                     </div>
-                    <div style="display: flex; gap: 5px; margin-top: 5px;">
-                        <button style="background: red; color: white; font-size: 0.75rem; padding: 8px 2px; flex: 1;"
-                            onclick="triggerSound('Sai_US.mp3')">Sai US</button>
-                        <button style="background: red; color: white; font-size: 0.75rem; padding: 8px 2px; flex: 1;"
-                            onclick="triggerSound('Sai_VN_1.mp3')">Sai VN 1</button>
-                        <button style="background: red; color: white; font-size: 0.75rem; padding: 8px 2px; flex: 1;"
-                            onclick="triggerSound('Sai_VN_2.mp3')">Sai VN 2</button>
+                    <div class="select-col">
+                        <label>NHẠC GIẢI Ô CHỮ:</label>
+                        <div style="display: flex; gap: 4px;">
+                            <select id="select-sound-solve-puzzle" style="flex: 1;">
+                                <option value="toss_up_solve.mp3">Đoán nhanh US</option>
+                                <option value="solve.mp3">Ô chữ US</option>
+                                <option value="solved 2001.mp3">Ô chữ VN 1</option>
+                                <option value="solved.mp3">Ô chữ VN 2</option>
+                                <option value="ClearPuzzle.mp3">Ô chữ VN 3</option>
+                            </select>
+                            <button style="background: green; color: white; font-size: 0.7rem; padding: 3px 6px; white-space: nowrap;"
+                                onclick="triggerSound('tossup.mp3')">Đoán nhanh</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Điều khiển bảng -->
+                <div class="grid-buttons board-action-buttons">
+                    <button style="background: #39ff14; color: black;" onclick="revealAllCorrect()">HIỆN ĐÚNG</button>
+                    <button style="background: aqua; color: black;" onclick="revealAllWrong()">HIỆN SAI</button>
+                    <button style="background-color: #ffff00; color: #000000; border: 1px solid #000;" onclick="revealDecodingCells()">Ô GIẢI MÃ</button>
+                    <button class="btn-reset" onclick="resetBoard()">RESET BẢNG</button>
+                    <button class="btn-stop-audio" onclick="stopAllSounds()">DỪNG ÂM THANH</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CỘT 3: BÀN PHÍM ĐIỀU KHIỂN & MỞ Ô THEO VỊ TRÍ -->
+        <div class="col col-3">
+            <div class="panel">
+                <div class="panel-header">
+                    <h3>3. BÀN PHÍM ĐIỀU KHIỂN</h3>
+                </div>
+                <div id="keyboard" class="keyboard"></div>
+
+                <div class="pos-control">
+                    <div class="pos-header-row">
+                        <span style="font-size:0.72rem; color:var(--pink);">MỞ Ô THEO VỊ TRÍ:</span>
+                        <input type="number" id="numPos" placeholder="Số ô..." oninput="generatePosInputs()">
+                    </div>
+
+                    <div id="posContainer" class="pos-input-grid"></div>
+
+                    <div style="display: flex; gap: 6px;">
+                        <button id="btnPos1" class="btn-action" onclick="processSequence(1)">Mở 1: Đánh dấu</button>
+                        <button id="btnPos2" class="btn-action" onclick="processSequence(2)">Mở 2: Mở chữ</button>
+                    </div>
+
+                    <div class="restore-wrapper">
+                        <span style="font-size: 0.72rem; color: var(--pink);">KHÔI PHỤC CHỮ CÁI:</span>
+                        <div id="restoreContainer"></div>
+                    </div>
+
+                    <div class="sound-selects-row" style="margin-top: 5px;">
+                        <div class="select-col">
+                            <label>NHẠC MỞ LẦN 1:</label>
+                            <select id="select-sound-step1">
+                                <option value="Mo_o_US.mp3">Mở ô US</option>
+                                <option value="Mo_o_Lan_1_VN_1.mp3">Mở ô L1 VN 1</option>
+                                <option value="Mo_o_Lan_1_VN_2.mp3">Mở ô L1 VN 2</option>
+                            </select>
+                        </div>
+                        <div class="select-col">
+                            <label>NHẠC MỞ LẦN 2:</label>
+                            <select id="select-sound-step2">
+                                <option value="Mo_o_Lan_2_VN_1.mp3">Mở ô L2 VN 1</option>
+                                <option value="Mo_o_Lan_2_VN_2.mp3">Mở ô L2 VN 2</option>
+                                <option value="none">Không có</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid-buttons sai-buttons">
+                        <button style="background: green; color: white;" onclick="triggerSound('mo o chu 2001 2.mp3')">VN 2001</button>
+                        <button style="background: red; color: white;" onclick="triggerSound('Sai_US.mp3')">Sai US</button>
+                        <button style="background: red; color: white;" onclick="triggerSound('Sai_VN_1.mp3')">Sai VN 1</button>
+                        <button style="background: red; color: white;" onclick="triggerSound('Sai_VN_2.mp3')">Sai VN 2</button>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <div class="right-col">
-        <div class="panel">
-            <h3>TRẠNG THÁI HIỆN TẠI</h3>
-            <p>Vòng: <span id="st-round" class="st-val">-</span></p>
-            <p>Chủ đề: <span id="st-cat" class="st-val">-</span></p>
-            <p>Ô chữ: <span id="st-puz" class="st-val">-</span></p>
-            <p>Đồng hồ ĐB: <span id="st-timer" class="st-val">45</span>s</p>
-        </div>
-
-        <div class="color-control-section" style="margin-top: 20px; border-top: 1px solid #333;">
-            <h3 style="color: #ff00cc; font-size: 14px; margin-bottom: 10px;">MÀU VIỀN Ô CHỮ</h3>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                <button onclick="changeBorderColor('rgb(128,0,128)')"
-                    style="background: transparent; border: 2px solid rgb(128,0,128); color: white; cursor: pointer; padding: 5px;">Tím</button>
-                <button onclick="changeBorderColor('rgb(255,0,0)')"
-                    style="background: transparent; border: 2px solid rgb(255,0,0); color: white; cursor: pointer; padding: 5px;">Đỏ</button>
-                <button onclick="changeBorderColor('rgb(255,255,0)')"
-                    style="background: transparent; border: 2px solid rgb(255,255,0); color: white; cursor: pointer; padding: 5px;">Vàng</button>
-                <button onclick="changeBorderColor('rgb(0,0,255)')"
-                    style="background: transparent; border: 2px solid rgb(0,0,255); color: white; cursor: pointer; padding: 5px;">Xanh</button>
-                <button onclick="changeBorderColor('rgb(0,255,0)')"
-                    style="background: transparent; border: 2px solid rgb(0, 255, 0); color: white; cursor: pointer; padding: 5px;">Xanh
-                    Lá</button>
-                <button onclick="changeBorderColor('rgb(255,255,255)')"
-                    style="background: #222; border: 2px solid rgb(255,255,255); color: #fff; cursor: pointer; padding: 5px; text-shadow: 0 0 2px #000;">Trắng</button>
+            <!-- Color Control Section: MÀU VIỀN Ô CHỮ -->
+            <div class="panel color-control-section">
+                <div class="panel-header">
+                    <h3>MÀU VIỀN Ô CHỮ</h3>
+                </div>
+                <div class="color-grid">
+                    <button onclick="changeBorderColor('rgb(128,0,128)')" style="background: transparent; border: 2px solid rgb(128,0,128); color: white;">Tím</button>
+                    <button onclick="changeBorderColor('rgb(255,0,0)')" style="background: transparent; border: 2px solid rgb(255,0,0); color: white;">Đỏ</button>
+                    <button onclick="changeBorderColor('rgb(255,255,0)')" style="background: transparent; border: 2px solid rgb(255,255,0); color: white;">Vàng</button>
+                    <button onclick="changeBorderColor('rgb(0,0,255)')" style="background: transparent; border: 2px solid rgb(0,0,255); color: white;">Xanh</button>
+                    <button onclick="changeBorderColor('rgb(0,255,0)')" style="background: transparent; border: 2px solid rgb(0, 255, 0); color: white;">Xanh Lá</button>
+                    <button onclick="changeBorderColor('rgb(255,255,255)')" style="background: #222; border: 2px solid rgb(255,255,255); color: #fff; text-shadow: 0 0 2px #000;">Trắng</button>
+                </div>
             </div>
         </div>
 
-        <div class="score-control-section" style="margin-top: 20px;">
-            <div class="player-panel"
-                style="border: 1px solid #444; padding: 10px; margin-bottom: 10px; border-radius: 5px;">
-                <p style="margin: 0 0 5px 0; color: red; font-size: 12px;">NC ĐỎ</p>
-                <div style="display: flex; gap: 5px; margin-bottom: 5px;">
-                    <div id="disp-red-total"
-                        style="flex: 1; padding: 5px; text-align: center; background:red; color:white;">0</div>
-                    <div id="disp-red-round"
-                        style="flex: 1; padding: 5px; text-align: center; background:red; color:white;">0</div>
+        <!-- CỘT 4: QUẢN LÝ ĐIỂM & NGƯỜI CHƠI -->
+        <div class="col col-4">
+            <div class="panel score-panel-main">
+                <div class="panel-header">
+                    <h3>QUẢN LÝ ĐIỂM SỐ</h3>
                 </div>
-                <div style="margin-bottom: 5px; font-size: 11px; color: #fff;">
-                    <input type="checkbox" id="chk-red-last-spin" style="cursor: pointer;">
-                    <label for="chk-red-last-spin" style="cursor: pointer;">Lượt quay cuối cùng</label>
-                </div>
-                <input type="text" id="input-red"
-                    style="width:100%; padding:8px; background:#000; color:#fff; border:1px solid #555; margin-bottom:5px;"
-                    placeholder="Nhập điểm..." oninput="formatInput(this)">
-                <div style="display: flex; gap: 5px;">
-                    <button style="background:green; color:white; font-size: 10px; padding: 5px; flex: 1;"
-                        onclick="addScore('red', 'total')">TỔNG +</button>
-                    <button style="background:#39ff14; color:black; font-size: 10px; padding: 5px; flex: 1;"
-                        onclick="addScore('red', 'round')">VÒNG +</button>
-                    <button style="background:aqua; color:black; font-size: 10px; padding: 5px; flex: 1;"
-                        onclick="subScore('red', 'round')">VÒNG -</button>
-                </div>
-                <div style="margin-top: 10px; display: flex; gap: 5px;">
-                    <button onclick="updatePlayerLight('red', 'color')"
-                        style="background: #ff0000; color: #fff; flex: 1; padding: 5px; cursor: pointer; font-size: 12px;">Đèn
-                        màu</button>
-                    <button onclick="updatePlayerLight('red', 'black')"
-                        style="background: #000000; color: #fff; flex: 1; padding: 5px; cursor: pointer; font-size: 12px;">Đèn
-                        đen</button>
-                    <button onclick="updatePlayerLight('red', 'white')"
-                        style="background: #ffffff; color: #000; flex: 1; padding: 5px; cursor: pointer; font-size: 12px;">Đèn
-                        trắng</button>
-                </div>
-                <div style="margin-top: 5px; display: flex; gap: 5px;">
-                    <button onclick="multiplyScore('red', 1.5)"
-                        style="background: red; color: #fff; flex: 1; padding: 5px; font-size: 11px;">x1.5</button>
-                    <button onclick="multiplyScore('red', 2)"
-                        style="background: red; color: #fff; flex: 1; padding: 5px; font-size: 11px;">x2</button>
-                    <button onclick="multiplyScore('red', 0.5)"
-                        style="background: red; color: #fff; flex: 1; padding: 5px; font-size: 11px;">:2</button>
-                </div>
-                <div style="margin-top: 5px; display: flex; gap: 5px;">
-                    <button onclick="resetPlayerScore('red', 'round')"
-                        style="background: red; color: #fff; flex: 1; padding: 5px; font-size: 10px;">Reset
-                        vòng</button>
-                    <button onclick="resetPlayerScore('red', 'total')"
-                        style="background: red; color: #fff; flex: 1; padding: 5px; font-size: 10px;">Reset
-                        tổng</button>
-                </div>
-            </div>
 
-            <div class="player-panel"
-                style="border: 1px solid #444; padding: 10px; margin-bottom: 10px; border-radius: 5px;">
-                <p style="margin: 0 0 5px 0; color: yellow; font-size: 12px;">NC VÀNG</p>
-                <div style="display: flex; gap: 5px; margin-bottom: 5px;">
-                    <div id="disp-yellow-total"
-                        style="flex: 1; padding: 5px; text-align: center; background:yellow; color:black;">0</div>
-                    <div id="disp-yellow-round"
-                        style="flex: 1; padding: 5px; text-align: center; background:yellow; color:black;">0</div>
+                <!-- NC ĐỎ -->
+                <div class="player-panel player-panel-red">
+                    <div class="player-header-row">
+                        <span class="player-name player-name-red" style="color: #ff0000;">NC ĐỎ</span>
+                        <div class="player-scores">
+                            <div id="disp-red-total" class="score-badge badge-red" style="background-color: #ff0000; color: #ffffff;" title="Điểm tổng">0</div>
+                            <div id="disp-red-round" class="score-badge badge-red" style="background-color: #ff0000; color: #ffffff;" title="Điểm vòng">0</div>
+                        </div>
+                    </div>
+                    <div class="player-input-row">
+                        <input type="text" id="input-red" placeholder="Nhập điểm..." oninput="formatInput(this)" style="flex: 1.8;">
+                        <div style="display: flex; align-items: center; gap: 2px;">
+                            <span style="font-size: 0.7rem; color: #000; font-weight: bold;">x</span>
+                            <input type="number" id="freq-red" value="1" min="1" placeholder="Tần số" title="Tần số (hệ số nhân)" style="width: 46px; padding: 3px 2px; text-align: center; background: #000; color: #39ff14; border: 1px solid #555; border-radius: 3px; font-size: 0.75rem;">
+                        </div>
+                        <label class="last-spin-label" style="color: #000000; font-weight: bold;">
+                            <input type="checkbox" id="chk-red-last-spin"> Quay cuối
+                        </label>
+                    </div>
+                    <div class="player-btn-row">
+                        <button class="btn-score-add-tot" onclick="addScore('red', 'total')">TỔNG +</button>
+                        <button class="btn-score-add-rnd" onclick="addScore('red', 'round')">VÒNG +</button>
+                        <button class="btn-score-sub-rnd" onclick="subScore('red', 'round')">VÒNG -</button>
+                        <button onclick="addRoundToTotal('red')" style="background: #800080; color: #ffffff; flex: 1.4; font-size: 7.5px; padding: 3px 1px;" title="Cộng thẳng điểm vòng vào tổng">+Vòng vào Tổng</button>
+                    </div>
+                    <div class="player-btn-row">
+                        <button onclick="updatePlayerLight('red', 'color')" style="background: #ff0000; color: #fff;">Đèn màu</button>
+                        <button onclick="updatePlayerLight('red', 'black')" style="background: #000000; color: #fff; border: 1px solid #444;">Đèn đen</button>
+                        <button onclick="updatePlayerLight('red', 'white')" style="background: #ffffff; color: #000; border: 1px solid #777;">Đèn trắng</button>
+                    </div>
+                    <div class="player-btn-row">
+                        <button onclick="multiplyScore('red', 1.5)" class="btn-mult">x1.5</button>
+                        <button onclick="multiplyScore('red', 2)" class="btn-mult">x2</button>
+                        <button onclick="multiplyScore('red', 0.5)" class="btn-mult">:2</button>
+                        <button onclick="resetPlayerScore('red', 'round')" class="btn-mult">Reset V</button>
+                        <button onclick="resetPlayerScore('red', 'total')" class="btn-mult">Reset T</button>
+                    </div>
                 </div>
-                <div style="margin-bottom: 5px; font-size: 11px; color: #fff;">
-                    <input type="checkbox" id="chk-yellow-last-spin" style="cursor: pointer;">
-                    <label for="chk-yellow-last-spin" style="cursor: pointer;">Lượt quay cuối cùng</label>
-                </div>
-                <input type="text" id="input-yellow"
-                    style="width:100%; padding:8px; background:#000; color:#fff; border:1px solid #555; margin-bottom:5px;"
-                    placeholder="Nhập điểm..." oninput="formatInput(this)">
-                <div style="display: flex; gap: 5px;">
-                    <button style="background:green; color:white; font-size: 10px; padding: 5px; flex: 1;"
-                        onclick="addScore('yellow', 'total')">TỔNG +</button>
-                    <button style="background:#39ff14; color:black; font-size: 10px; padding: 5px; flex: 1;"
-                        onclick="addScore('yellow', 'round')">VÒNG +</button>
-                    <button style="background:aqua; color:black; font-size: 10px; padding: 5px; flex: 1;"
-                        onclick="subScore('yellow', 'round')">VÒNG -</button>
-                </div>
-                <div style="margin-top: 10px; display: flex; gap: 5px;">
-                    <button onclick="updatePlayerLight('yellow', 'color')"
-                        style="background: #ffff00; color: #000; flex: 1; padding: 5px; cursor: pointer; font-size: 12px;">Đèn
-                        màu</button>
-                    <button onclick="updatePlayerLight('yellow', 'black')"
-                        style="background: #000000; color: #fff; flex: 1; padding: 5px; cursor: pointer; font-size: 12px;">Đèn
-                        đen</button>
-                    <button onclick="updatePlayerLight('yellow', 'white')"
-                        style="background: #ffffff; color: #000; flex: 1; padding: 5px; cursor: pointer; font-size: 12px;">Đèn
-                        trắng</button>
-                </div>
-                <div style="margin-top: 5px; display: flex; gap: 5px;">
-                    <button onclick="multiplyScore('yellow', 1.5)"
-                        style="background: yellow; color: #000; flex: 1; padding: 5px; font-size: 11px;">x1.5</button>
-                    <button onclick="multiplyScore('yellow', 2)"
-                        style="background: yellow; color: #000; flex: 1; padding: 5px; font-size: 11px;">x2</button>
-                    <button onclick="multiplyScore('yellow', 0.5)"
-                        style="background: yellow; color: #000; flex: 1; padding: 5px; font-size: 11px;">:2</button>
-                </div>
-                <div style="margin-top: 5px; display: flex; gap: 5px;">
-                    <button onclick="resetPlayerScore('yellow', 'round')"
-                        style="background: yellow; color: #000; flex: 1; padding: 5px; font-size: 10px;">Reset
-                        vòng</button>
-                    <button onclick="resetPlayerScore('yellow', 'total')"
-                        style="background: yellow; color: #000; flex: 1; padding: 5px; font-size: 10px;">Reset
-                        tổng</button>
-                </div>
-            </div>
 
-            <div class="player-panel"
-                style="border: 1px solid #444; padding: 10px; margin-bottom: 10px; border-radius: 5px;">
-                <p style="margin: 0 0 5px 0; color: #008cff; font-size: 12px;">NC XANH</p>
-                <div style="display: flex; gap: 5px; margin-bottom: 5px;">
-                    <div id="disp-blue-total"
-                        style="flex: 1; padding: 5px; text-align: center; background:blue; color:white;">0</div>
-                    <div id="disp-blue-round"
-                        style="flex: 1; padding: 5px; text-align: center; background:blue; color:white;">0</div>
+                <!-- NC VÀNG -->
+                <div class="player-panel player-panel-yellow">
+                    <div class="player-header-row">
+                        <span class="player-name player-name-yellow" style="color: #ffff00;">NC VÀNG</span>
+                        <div class="player-scores">
+                            <div id="disp-yellow-total" class="score-badge badge-yellow" style="background-color: #ffff00; color: #000000;" title="Điểm tổng">0</div>
+                            <div id="disp-yellow-round" class="score-badge badge-yellow" style="background-color: #ffff00; color: #000000;" title="Điểm vòng">0</div>
+                        </div>
+                    </div>
+                    <div class="player-input-row">
+                        <input type="text" id="input-yellow" placeholder="Nhập điểm..." oninput="formatInput(this)" style="flex: 1.8;">
+                        <div style="display: flex; align-items: center; gap: 2px;">
+                            <span style="font-size: 0.7rem; color: #39ff14;">x</span>
+                            <input type="number" id="freq-yellow" value="1" min="1" placeholder="Tần số" title="Tần số (hệ số nhân)" style="width: 46px; padding: 3px 2px; text-align: center; background: #000; color: #39ff14; border: 1px solid #555; border-radius: 3px; font-size: 0.75rem;">
+                        </div>
+                        <label class="last-spin-label">
+                            <input type="checkbox" id="chk-yellow-last-spin"> Quay cuối
+                        </label>
+                    </div>
+                    <div class="player-btn-row">
+                        <button class="btn-score-add-tot" onclick="addScore('yellow', 'total')">TỔNG +</button>
+                        <button class="btn-score-add-rnd" onclick="addScore('yellow', 'round')">VÒNG +</button>
+                        <button class="btn-score-sub-rnd" onclick="subScore('yellow', 'round')">VÒNG -</button>
+                        <button onclick="addRoundToTotal('yellow')" style="background: #800080; color: #ffffff; flex: 1.4; font-size: 7.5px; padding: 3px 1px;" title="Cộng thẳng điểm vòng vào tổng">+Vòng vào Tổng</button>
+                    </div>
+                    <div class="player-btn-row">
+                        <button onclick="updatePlayerLight('yellow', 'color')" style="background: #ffff00; color: #000;">Đèn màu</button>
+                        <button onclick="updatePlayerLight('yellow', 'black')" style="background: #000000; color: #fff; border: 1px solid #444;">Đèn đen</button>
+                        <button onclick="updatePlayerLight('yellow', 'white')" style="background: #ffffff; color: #000;">Đèn trắng</button>
+                    </div>
+                    <div class="player-btn-row">
+                        <button onclick="multiplyScore('yellow', 1.5)" class="btn-mult">x1.5</button>
+                        <button onclick="multiplyScore('yellow', 2)" class="btn-mult">x2</button>
+                        <button onclick="multiplyScore('yellow', 0.5)" class="btn-mult">:2</button>
+                        <button onclick="resetPlayerScore('yellow', 'round')" class="btn-mult">Reset V</button>
+                        <button onclick="resetPlayerScore('yellow', 'total')" class="btn-mult">Reset T</button>
+                    </div>
                 </div>
-                <div style="margin-bottom: 5px; font-size: 11px; color: #fff;">
-                    <input type="checkbox" id="chk-blue-last-spin" style="cursor: pointer;">
-                    <label for="chk-blue-last-spin" style="cursor: pointer;">Lượt quay cuối cùng</label>
-                </div>
-                <input type="text" id="input-blue"
-                    style="width:100%; padding:8px; background:#000; color:#fff; border:1px solid #555; margin-bottom:5px;"
-                    placeholder="Nhập điểm..." oninput="formatInput(this)">
-                <div style="display: flex; gap: 5px;">
-                    <button style="background:green; color:white; font-size: 10px; padding: 5px; flex: 1;"
-                        onclick="addScore('blue', 'total')">TỔNG +</button>
-                    <button style="background:#39ff14; color:black; font-size: 10px; padding: 5px; flex: 1;"
-                        onclick="addScore('blue', 'round')">VÒNG +</button>
-                    <button style="background:aqua; color:black; font-size: 10px; padding: 5px; flex: 1;"
-                        onclick="subScore('blue', 'round')">VÒNG -</button>
-                </div>
-                <div style="margin-top: 10px; display: flex; gap: 5px;">
-                    <button onclick="updatePlayerLight('blue', 'color')"
-                        style="background: #0000ff; color: #fff; flex: 1; padding: 5px; cursor: pointer; font-size: 12px;">Đèn
-                        màu</button>
-                    <button onclick="updatePlayerLight('blue', 'black')"
-                        style="background: #000000; color: #fff; flex: 1; padding: 5px; cursor: pointer; font-size: 12px;">Đèn
-                        đen</button>
-                    <button onclick="updatePlayerLight('blue', 'white')"
-                        style="background: #ffffff; color: #000; flex: 1; padding: 5px; cursor: pointer; font-size: 12px;">Đèn
-                        trắng</button>
-                </div>
-                <div style="margin-top: 5px; display: flex; gap: 5px;">
-                    <button onclick="multiplyScore('blue', 1.5)"
-                        style="background: blue; color: #fff; flex: 1; padding: 5px; font-size: 11px;">x1.5</button>
-                    <button onclick="multiplyScore('blue', 2)"
-                        style="background: blue; color: #fff; flex: 1; padding: 5px; font-size: 11px;">x2</button>
-                    <button onclick="multiplyScore('blue', 0.5)"
-                        style="background: blue; color: #fff; flex: 1; padding: 5px; font-size: 11px;">:2</button>
-                </div>
-                <div style="margin-top: 5px; display: flex; gap: 5px;">
-                    <button onclick="resetPlayerScore('blue', 'round')"
-                        style="background: blue; color: #fff; flex: 1; padding: 5px; font-size: 10px;">Reset
-                        vòng</button>
-                    <button onclick="resetPlayerScore('blue', 'total')"
-                        style="background: blue; color: #fff; flex: 1; padding: 5px; font-size: 10px;">Reset
-                        tổng</button>
-                </div>
-            </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px;">
-                <button style="background:purple; color:white;" onclick="resetScores('round')">RESET ĐIỂM VÒNG</button>
-                <button style="background:purple; color:white;" onclick="resetScores('total')">RESET ĐIỂM TỔNG</button>
-                <button style="background:blue; color:white;" onclick="toggleDisplayScore('round')">HIỆN ĐIỂM
-                    VÒNG</button>
-                <button style="background:blue; color:white;" onclick="toggleDisplayScore('total')">HIỆN ĐIỂM
-                    TỔNG</button>
+                <!-- NC XANH -->
+                <div class="player-panel player-panel-blue">
+                    <div class="player-header-row">
+                        <span class="player-name player-name-blue" style="color: #0000ff;">NC XANH</span>
+                        <div class="player-scores">
+                            <div id="disp-blue-total" class="score-badge badge-blue" style="background-color: #0000ff; color: #ffffff;" title="Điểm tổng">0</div>
+                            <div id="disp-blue-round" class="score-badge badge-blue" style="background-color: #0000ff; color: #ffffff;" title="Điểm vòng">0</div>
+                        </div>
+                    </div>
+                    <div class="player-input-row">
+                        <input type="text" id="input-blue" placeholder="Nhập điểm..." oninput="formatInput(this)" style="flex: 1.8;">
+                        <div style="display: flex; align-items: center; gap: 2px;">
+                            <span style="font-size: 0.7rem; color: #000; font-weight: bold;">x</span>
+                            <input type="number" id="freq-blue" value="1" min="1" placeholder="Tần số" title="Tần số (hệ số nhân)" style="width: 46px; padding: 3px 2px; text-align: center; background: #000; color: #39ff14; border: 1px solid #555; border-radius: 3px; font-size: 0.75rem;">
+                        </div>
+                        <label class="last-spin-label" style="color: #000000; font-weight: bold;">
+                            <input type="checkbox" id="chk-blue-last-spin"> Quay cuối
+                        </label>
+                    </div>
+                    <div class="player-btn-row">
+                        <button class="btn-score-add-tot" onclick="addScore('blue', 'total')">TỔNG +</button>
+                        <button class="btn-score-add-rnd" onclick="addScore('blue', 'round')">VÒNG +</button>
+                        <button class="btn-score-sub-rnd" onclick="subScore('blue', 'round')">VÒNG -</button>
+                        <button onclick="addRoundToTotal('blue')" style="background: #800080; color: #ffffff; flex: 1.4; font-size: 7.5px; padding: 3px 1px;" title="Cộng thẳng điểm vòng vào tổng">+Vòng vào Tổng</button>
+                    </div>
+                    <div class="player-btn-row">
+                        <button onclick="updatePlayerLight('blue', 'color')" style="background: #0000ff; color: #fff;">Đèn màu</button>
+                        <button onclick="updatePlayerLight('blue', 'black')" style="background: #000000; color: #fff; border: 1px solid #444;">Đèn đen</button>
+                        <button onclick="updatePlayerLight('blue', 'white')" style="background: #ffffff; color: #000; border: 1px solid #777;">Đèn trắng</button>
+                    </div>
+                    <div class="player-btn-row">
+                        <button onclick="multiplyScore('blue', 1.5)" class="btn-mult">x1.5</button>
+                        <button onclick="multiplyScore('blue', 2)" class="btn-mult">x2</button>
+                        <button onclick="multiplyScore('blue', 0.5)" class="btn-mult">:2</button>
+                        <button onclick="resetPlayerScore('blue', 'round')" class="btn-mult">Reset V</button>
+                        <button onclick="resetPlayerScore('blue', 'total')" class="btn-mult">Reset T</button>
+                    </div>
+                </div>
+
+                <!-- Global Score Buttons -->
+                <div class="global-score-grid">
+                    <button style="background:purple; color:white;" onclick="resetScores('round')">RESET ĐIỂM VÒNG</button>
+                    <button style="background:purple; color:white;" onclick="resetScores('total')">RESET ĐIỂM TỔNG</button>
+                    <button style="background:blue; color:white;" onclick="toggleDisplayScore('round')">HIỆN ĐIỂM VÒNG</button>
+                    <button style="background:blue; color:white;" onclick="toggleDisplayScore('total')">HIỆN ĐIỂM TỔNG</button>
+                </div>
             </div>
         </div>
     </div>
@@ -2460,23 +2719,36 @@
             let val = input.value.replace(/\D/g, "");
             input.value = val ? Number(val).toLocaleString('vi-VN') : "";
         }
+
+        function getPlayerScoreDelta(p) {
+            const inputEl = document.getElementById(`input-${p}`);
+            const baseVal = inputEl ? (parseInt(inputEl.value.replace(/\./g, ""), 10) || 0) : 0;
+            const freqEl = document.getElementById(`freq-${p}`);
+            const freq = freqEl ? (parseInt(freqEl.value, 10) || 1) : 1;
+            return baseVal * freq;
+        }
+
         async function addScore(p, t) {
-            const val = parseInt(document.getElementById(`input-${p}`).value.replace(/\./g, "")) || 0;
+            const val = getPlayerScoreDelta(p);
             scores[p][t] += val;
 
-            const isLastSpin = document.getElementById(`chk-${p}-last-spin`)?.checked;
-
-            if (!(t === 'round' && isLastSpin)) {
-                document.getElementById(`input-${p}`).value = "";
-            }
-
+            // Textbox nhập điểm không tự xóa khi bấm nút Tổng +, Vòng +, Vòng -
             await syncScores();
         }
+
         async function subScore(p, t) {
-            const val = parseInt(document.getElementById(`input-${p}`).value.replace(/\./g, "")) || 0;
+            const val = getPlayerScoreDelta(p);
             scores[p][t] -= val;
-            document.getElementById(`input-${p}`).value = "";
+
+            // Textbox nhập điểm không tự xóa khi bấm nút Tổng +, Vòng +, Vòng -
             await syncScores();
+        }
+
+        async function addRoundToTotal(p) {
+            if (scores[p]) {
+                scores[p].total += (scores[p].round || 0);
+                await syncScores();
+            }
         }
         async function resetScores(t) {
             scores.red[t] = 0; scores.yellow[t] = 0; scores.blue[t] = 0;
